@@ -1,6 +1,6 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
-Version: 5.2.0
+Version: 5.2.1
 Release: 1%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
@@ -547,6 +547,7 @@ fi
 %doc %{_mandir}/man1/collectd.1*
 %doc %{_mandir}/man1/collectdctl.1*
 %doc %{_mandir}/man1/collectd-nagios.1*
+%doc %{_mandir}/man1/collectd-tg.1*
 %doc %{_mandir}/man1/collectdmon.1*
 %doc %{_mandir}/man5/collectd.conf.5*
 %doc %{_mandir}/man5/collectd-exec.5*
@@ -659,6 +660,10 @@ fi
 %endif
 
 %changelog
+* Mon Feb 04 2013 Alan Pevec <apevec@redhat.com> 5.2.1-1
+- update to 5.2.1
+  http://mailman.verplant.org/pipermail/collectd/2013-January/005577.html
+
 * Mon Nov 26 2012 Alan Pevec <apevec@redhat.com> 5.2.0-1
 - update to 5.2.0 from Steve Traylen rhbz#877721
 

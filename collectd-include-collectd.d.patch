@@ -1,14 +1,14 @@
---- src/collectd.conf.in.orig	2012-02-19 11:17:59.000000000 +0100
-+++ src/collectd.conf.in	2012-02-26 15:54:51.463235956 +0100
-@@ -19,6 +19,7 @@
- #Interval     10
+--- src/collectd.conf.in.orig	2013-01-27 14:47:18.246255910 +0100
++++ src/collectd.conf.in	2013-02-04 00:18:28.457298392 +0100
+@@ -28,6 +28,7 @@
+ 
  #Timeout      2
  #ReadThreads  5
 +Include      "/etc/collectd.d"
  
  ##############################################################################
  # Logging                                                                    #
-@@ -123,7 +124,7 @@
+@@ -136,7 +137,7 @@
  #@BUILD_PLUGIN_REDIS_TRUE@LoadPlugin redis
  #@BUILD_PLUGIN_ROUTEROS_TRUE@LoadPlugin routeros
  #@BUILD_PLUGIN_RRDCACHED_TRUE@LoadPlugin rrdcached
