@@ -1,6 +1,8 @@
+%global _hardened_build 1
+
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
-Version: 5.2.1
+Version: 5.2.2
 Release: 1%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
@@ -10,8 +12,14 @@ Source: http://collectd.org/files/%{name}-%{version}.tar.bz2
 Source1: collectd-httpd.conf
 Source2: collection.conf
 Source3: collectd.service
+Source91: apache.conf
+Source92: email.conf
+Source93: mysql.conf
+Source94: nginx.conf
+Source95: sensors.conf
+Source96: snmp.conf
+
 Patch1: %{name}-include-collectd.d.patch
-Patch2: fixperlinstall.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
@@ -189,7 +197,6 @@ This plugin collects information from virtualized guests.
 %prep
 %setup -q
 %patch1
-%patch2
 
 sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
 
@@ -349,12 +356,12 @@ find contrib -name '*.p[lm]' -exec mv {} perl-examples/ \;
 
 # Move config contribs
 mkdir -p %{buildroot}/etc/collectd.d/
-cp contrib/redhat/apache.conf %{buildroot}/etc/collectd.d/apache.conf
-cp contrib/redhat/email.conf %{buildroot}/etc/collectd.d/email.conf
-cp contrib/redhat/mysql.conf %{buildroot}/etc/collectd.d/mysql.conf
-cp contrib/redhat/nginx.conf %{buildroot}/etc/collectd.d/nginx.conf
-cp contrib/redhat/sensors.conf %{buildroot}/etc/collectd.d/sensors.conf
-cp contrib/redhat/snmp.conf %{buildroot}/etc/collectd.d/snmp.conf
+cp %{SOURCE91} %{buildroot}/etc/collectd.d/apache.conf
+cp %{SOURCE92} %{buildroot}/etc/collectd.d/email.conf
+cp %{SOURCE93} %{buildroot}/etc/collectd.d/mysql.conf
+cp %{SOURCE94} %{buildroot}/etc/collectd.d/nginx.conf
+cp %{SOURCE95} %{buildroot}/etc/collectd.d/sensors.conf
+cp %{SOURCE96} %{buildroot}/etc/collectd.d/snmp.conf
 
 # configs for subpackaged plugins
 %ifnarch s390 s390x
@@ -660,6 +667,11 @@ fi
 %endif
 
 %changelog
+* Mon Apr 22 2013 Alan Pevec <apevec@redhat.com> 5.2.2-1
+- update to 5.2.2
+  http://mailman.verplant.org/pipermail/collectd/2013-April/005749.html
+- build with PIE flags rhbz#954322
+
 * Mon Feb 04 2013 Alan Pevec <apevec@redhat.com> 5.2.1-1
 - update to 5.2.1
   http://mailman.verplant.org/pipermail/collectd/2013-January/005577.html
