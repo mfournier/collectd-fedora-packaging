@@ -1,4 +1,5 @@
 %global _hardened_build 1
+%global __provides_exclude_from ^%{_libdir}/collectd/.*\\.so$
 
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
@@ -668,6 +669,7 @@ fi
 - update to 5.3.0
   http://mailman.verplant.org/pipermail/collectd/2013-April/005749.html
 - enable tail_csv plugin
+- filter plugins from Provides
 
 * Mon Apr 22 2013 Alan Pevec <apevec@redhat.com> 5.2.2-1
 - update to 5.2.2
