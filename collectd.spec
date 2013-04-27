@@ -20,28 +20,19 @@ Source94: nginx.conf
 Source95: sensors.conf
 Source96: snmp.conf
 
-Patch1: %{name}-include-collectd.d.patch
-
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+Patch0: %{name}-include-collectd.d.patch
 
 BuildRequires: libxml2-devel
 BuildRequires: curl-devel
 BuildRequires: yajl-devel
-%if 0%{?fedora} >= 8
-BuildRequires: perl-libs, perl-devel
-%else
-BuildRequires: perl
-%endif
 BuildRequires: perl(ExtUtils::MakeMaker)
 BuildRequires: perl(ExtUtils::Embed)
 BuildRequires: iptables-devel
 BuildRequires: python-devel
 BuildRequires: libgcrypt-devel
-%if 0%{?fedora} >= 15
-Requires(post):   systemd-units
-Requires(preun):  systemd-units
-Requires(postun): systemd-units
-%endif
+Requires(post):   systemd
+Requires(preun):  systemd
+Requires(postun): systemd
 
 
 %description
@@ -194,7 +185,7 @@ This plugin collects information from virtualized guests.
 
 %prep
 %setup -q
-%patch1 -p1
+%patch0 -p1
 
 sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
 
@@ -313,7 +304,6 @@ sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
 
 
 %install
-%{__rm} -rf %{buildroot}
 %{__rm} -rf contrib/SpamAssassin
 %{__make} install DESTDIR="%{buildroot}"
 
@@ -387,51 +377,19 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 %post
 /sbin/ldconfig
-if [ $1 -eq 1 ] ; then
-    # Initial installation
-%if 0%{?fedora} >= 15
-    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
-%else
-    /sbin/chkconfig --add collectd
-%endif
-fi
+%systemd_post collectd.service
 
 
 %preun
-if [ $1 -eq 0 ]; then
-    # Package removal, not upgrade
-%if 0%{?fedora} >= 15
-    /bin/systemctl --no-reload disable collectd.service > /dev/null 2>&1 || :
-    /bin/systemctl stop collectd.service > /dev/null 2>&1 || :
-%else
-    /sbin/service collectd stop &>/dev/null || :
-    /sbin/chkconfig --del collectd
-%endif
-fi
+%systemd_preun collectd.service
 
 
 %postun
 /sbin/ldconfig
-%if 0%{?fedora} >= 15
-/bin/systemctl daemon-reload >/dev/null 2>&1 || :
-%endif
-if [ $1 -ge 1 ] ; then
-    # Package upgrade, not uninstall
-%if 0%{?fedora} >= 15
-    /bin/systemctl try-restart collectd.service >/dev/null 2>&1 || :
-%else
-    /sbin/service collectd condrestart &>/dev/null || :
-%endif
-fi
-
-
-%clean
-%{__rm} -rf %{buildroot}
+%systemd_postun_with_restart collectd.service
 
 
 %files
-%defattr(-, root, root, -)
-
 %config(noreplace) %{_sysconfdir}/collectd.conf
 %config(noreplace) %{_sysconfdir}/collectd.d/
 %exclude %{_sysconfdir}/collectd.d/apache.conf
@@ -452,11 +410,7 @@ fi
 %exclude %{_sysconfdir}/collectd.d/sensors.conf
 %exclude %{_sysconfdir}/collectd.d/snmp.conf
 
-%if 0%{?fedora} >= 15
 %{_unitdir}/collectd.service
-%else
-%{_initrddir}/collectd
-%endif
 %{_bindir}/collectd-nagios
 %{_bindir}/collectdctl
 %{_bindir}/collectd-tg
@@ -465,18 +419,26 @@ fi
 %dir %{_localstatedir}/lib/collectd/
 
 %dir %{_libdir}/collectd
+
+%{_libdir}/collectd/aggregation.so
 %{_libdir}/collectd/apcups.so
 %{_libdir}/collectd/battery.so
+%{_libdir}/collectd/bind.so
+%{_libdir}/collectd/conntrack.so
 %{_libdir}/collectd/contextswitch.so
 %{_libdir}/collectd/cpu.so
 %{_libdir}/collectd/cpufreq.so
 %{_libdir}/collectd/csv.so
+%{_libdir}/collectd/curl.so
+%{_libdir}/collectd/curl_json.so
 %{_libdir}/collectd/curl_xml.so
 %{_libdir}/collectd/df.so
 %{_libdir}/collectd/disk.so
 %{_libdir}/collectd/entropy.so
+%{_libdir}/collectd/ethstat.so
 %{_libdir}/collectd/exec.so
 %{_libdir}/collectd/filecount.so
+%{_libdir}/collectd/fscache.so
 %{_libdir}/collectd/hddtemp.so
 %{_libdir}/collectd/interface.so
 %{_libdir}/collectd/iptables.so
@@ -486,57 +448,49 @@ fi
 %{_libdir}/collectd/madwifi.so
 %{_libdir}/collectd/match_empty_counter.so
 %{_libdir}/collectd/match_hashed.so
+%{_libdir}/collectd/match_regex.so
+%{_libdir}/collectd/match_timediff.so
+%{_libdir}/collectd/match_value.so
 %{_libdir}/collectd/mbmon.so
+%{_libdir}/collectd/md.so
 %{_libdir}/collectd/memcached.so
 %{_libdir}/collectd/memory.so
 %{_libdir}/collectd/multimeter.so
 %{_libdir}/collectd/network.so
 %{_libdir}/collectd/nfs.so
 %{_libdir}/collectd/ntpd.so
+%{_libdir}/collectd/numa.so
 %{_libdir}/collectd/olsrd.so
+%{_libdir}/collectd/openvpn.so
 %{_libdir}/collectd/powerdns.so
 %{_libdir}/collectd/processes.so
+%{_libdir}/collectd/protocols.so
 %{_libdir}/collectd/python.so
 %{_libdir}/collectd/serial.so
 %{_libdir}/collectd/swap.so
 %{_libdir}/collectd/syslog.so
+%{_libdir}/collectd/table.so
 %{_libdir}/collectd/tail.so
 %{_libdir}/collectd/tail_csv.so
+%{_libdir}/collectd/target_notification.so
+%{_libdir}/collectd/target_replace.so
 %{_libdir}/collectd/target_scale.so
+%{_libdir}/collectd/target_set.so
 %{_libdir}/collectd/target_v5upgrade.so
 %{_libdir}/collectd/tcpconns.so
 %{_libdir}/collectd/teamspeak2.so
+%{_libdir}/collectd/ted.so
 %{_libdir}/collectd/thermal.so
 %{_libdir}/collectd/threshold.so
 %{_libdir}/collectd/unixsock.so
+%{_libdir}/collectd/uptime.so
 %{_libdir}/collectd/users.so
 %{_libdir}/collectd/uuid.so
 %{_libdir}/collectd/vmem.so
 %{_libdir}/collectd/vserver.so
 %{_libdir}/collectd/wireless.so
-%{_libdir}/collectd/write_http.so
-
-%{_libdir}/collectd/bind.so
-%{_libdir}/collectd/conntrack.so
-%{_libdir}/collectd/curl.so
-%{_libdir}/collectd/curl_json.so
-%{_libdir}/collectd/fscache.so
-%{_libdir}/collectd/match_regex.so
-%{_libdir}/collectd/match_timediff.so
-%{_libdir}/collectd/match_value.so
-%{_libdir}/collectd/openvpn.so
-%{_libdir}/collectd/protocols.so
-%{_libdir}/collectd/table.so
-%{_libdir}/collectd/target_notification.so
-%{_libdir}/collectd/target_replace.so
-%{_libdir}/collectd/target_set.so
-%{_libdir}/collectd/ted.so
-%{_libdir}/collectd/uptime.so
-%{_libdir}/collectd/aggregation.so
-%{_libdir}/collectd/ethstat.so
-%{_libdir}/collectd/md.so
-%{_libdir}/collectd/numa.so
 %{_libdir}/collectd/write_graphite.so
+%{_libdir}/collectd/write_http.so
 
 %{_datadir}/collectd/types.db
 
@@ -673,6 +627,7 @@ fi
 - enable tail_csv plugin
 - enable curl_json plugin
 - filter plugins from Provides
+- use new systemd macros (#850062)
 
 * Mon Apr 22 2013 Alan Pevec <apevec@redhat.com> 5.2.2-1
 - update to 5.2.2
