@@ -355,13 +355,13 @@ mkdir perl-examples
 find contrib -name '*.p[lm]' -exec mv {} perl-examples/ \;
 
 # Move config contribs
-mkdir -p %{buildroot}/etc/collectd.d/
-cp %{SOURCE91} %{buildroot}/etc/collectd.d/apache.conf
-cp %{SOURCE92} %{buildroot}/etc/collectd.d/email.conf
-cp %{SOURCE93} %{buildroot}/etc/collectd.d/mysql.conf
-cp %{SOURCE94} %{buildroot}/etc/collectd.d/nginx.conf
-cp %{SOURCE95} %{buildroot}/etc/collectd.d/sensors.conf
-cp %{SOURCE96} %{buildroot}/etc/collectd.d/snmp.conf
+mkdir -p %{buildroot}%{_sysconfdir}/collectd.d/
+cp %{SOURCE91} %{buildroot}%{_sysconfdir}/collectd.d/apache.conf
+cp %{SOURCE92} %{buildroot}%{_sysconfdir}/collectd.d/email.conf
+cp %{SOURCE93} %{buildroot}%{_sysconfdir}/collectd.d/mysql.conf
+cp %{SOURCE94} %{buildroot}%{_sysconfdir}/collectd.d/nginx.conf
+cp %{SOURCE95} %{buildroot}%{_sysconfdir}/collectd.d/sensors.conf
+cp %{SOURCE96} %{buildroot}%{_sysconfdir}/collectd.d/snmp.conf
 
 # configs for subpackaged plugins
 %ifnarch s390 s390x
@@ -370,11 +370,11 @@ for p in dns ipmi libvirt nut perl ping postgresql rrdtool
 for p in dns ipmi libvirt perl ping postgresql rrdtool
 %endif
 do
-%{__cat} > %{buildroot}/etc/collectd.d/$p.conf <<EOF
+%{__cat} > %{buildroot}%{_sysconfdir}/collectd.d/$p.conf <<EOF
 LoadPlugin $p
 EOF
 done
-%{__cat} >> %{buildroot}/etc/collectd.d/rrdtool.conf <<EOF
+%{__cat} >> %{buildroot}%{_sysconfdir}/collectd.d/rrdtool.conf <<EOF
 <Plugin rrdtool>
        DataDir "/var/lib/collectd/rrd"
        CacheTimeout 120
