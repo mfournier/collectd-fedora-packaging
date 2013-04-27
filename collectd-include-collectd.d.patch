@@ -1,14 +1,15 @@
---- src/collectd.conf.in.orig	2013-01-27 14:47:18.246255910 +0100
-+++ src/collectd.conf.in	2013-02-04 00:18:28.457298392 +0100
-@@ -28,6 +28,7 @@
+diff -up collectd-5.3.0/src/collectd.conf.in.include collectd-5.3.0/src/collectd.conf.in
+--- collectd-5.3.0/src/collectd.conf.in.include	2013-04-27 17:56:28.489000000 +0200
++++ collectd-5.3.0/src/collectd.conf.in	2013-04-27 17:58:10.317000000 +0200
+@@ -52,6 +52,7 @@
+ #	LogLevel @DEFAULT_LOG_LEVEL@
+ #</Plugin>
  
- #Timeout      2
- #ReadThreads  5
-+Include      "/etc/collectd.d"
- 
++Include "/etc/collectd.d"
  ##############################################################################
- # Logging                                                                    #
-@@ -136,7 +137,7 @@
+ # LoadPlugin section                                                         #
+ #----------------------------------------------------------------------------#
+@@ -137,7 +138,7 @@
  #@BUILD_PLUGIN_REDIS_TRUE@LoadPlugin redis
  #@BUILD_PLUGIN_ROUTEROS_TRUE@LoadPlugin routeros
  #@BUILD_PLUGIN_RRDCACHED_TRUE@LoadPlugin rrdcached

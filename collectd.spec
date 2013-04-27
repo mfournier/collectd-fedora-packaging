@@ -2,7 +2,7 @@
 
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
-Version: 5.2.2
+Version: 5.3.0
 Release: 1%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
@@ -196,7 +196,7 @@ This plugin collects information from virtualized guests.
 
 %prep
 %setup -q
-%patch1
+%patch1 -p1
 
 sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
 
@@ -503,6 +503,7 @@ fi
 %{_libdir}/collectd/swap.so
 %{_libdir}/collectd/syslog.so
 %{_libdir}/collectd/tail.so
+%{_libdir}/collectd/tail_csv.so
 %{_libdir}/collectd/target_scale.so
 %{_libdir}/collectd/target_v5upgrade.so
 %{_libdir}/collectd/tcpconns.so
@@ -667,6 +668,11 @@ fi
 %endif
 
 %changelog
+* Sat Apr 27 2013 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.3.0-1
+- update to 5.3.0
+  http://mailman.verplant.org/pipermail/collectd/2013-April/005749.html
+- enable tail_csv plugin
+
 * Mon Apr 22 2013 Alan Pevec <apevec@redhat.com> 5.2.2-1
 - update to 5.2.2
   http://mailman.verplant.org/pipermail/collectd/2013-April/005749.html
