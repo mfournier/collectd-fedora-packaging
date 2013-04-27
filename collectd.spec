@@ -23,12 +23,7 @@ Patch1: %{name}-include-collectd.d.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
-%ifnarch ppc ppc64 sparc sparc64
-BuildRequires: libvirt-devel
-BuildRequires: lm_sensors-devel
-%endif
 BuildRequires: libxml2-devel
-BuildRequires: rrdtool-devel
 BuildRequires: curl-devel
 %if 0%{?fedora} >= 8
 BuildRequires: perl-libs, perl-devel
@@ -37,16 +32,7 @@ BuildRequires: perl
 %endif
 BuildRequires: perl(ExtUtils::MakeMaker)
 BuildRequires: perl(ExtUtils::Embed)
-BuildRequires: net-snmp-devel
-BuildRequires: libpcap-devel
-BuildRequires: mysql-devel
-BuildRequires: OpenIPMI-devel
-BuildRequires: postgresql-devel
-%ifnarch s390 s390x
-BuildRequires: nut-devel
-%endif
 BuildRequires: iptables-devel
-BuildRequires: liboping-devel
 BuildRequires: python-devel
 BuildRequires: libgcrypt-devel
 %if 0%{?fedora} >= 15
@@ -76,6 +62,7 @@ This plugin collects data provided by Apache's 'mod_status'.
 Summary:       DNS traffic analysis module for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}
+BuildRequires: libpcap-devel
 %description dns
 This plugin collects DNS traffic data.
 
@@ -92,6 +79,7 @@ This plugin collects data provided by spamassassin.
 Summary:       IPMI module for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}
+BuildRequires: OpenIPMI-devel
 %description ipmi
 This plugin for collectd provides IPMI support.
 
@@ -100,6 +88,7 @@ This plugin for collectd provides IPMI support.
 Summary:       MySQL module for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}
+BuildRequires: mysql-devel
 %description mysql
 MySQL querying plugin. This plugins provides data of issued commands,
 called handlers and database traffic.
@@ -118,6 +107,7 @@ This plugin gets data provided by nginx.
 Summary:       Network UPS Tools module for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}
+BuildRequires: nut-devel
 %description nut
 This plugin for collectd provides Network UPS Tools support.
 %endif
@@ -136,6 +126,7 @@ This package contains Perl bindings and plugin for collectd.
 Summary:       Ping module for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}
+BuildRequires: liboping-devel
 %description ping
 This plugin for collectd provides network latency statistics.
 
@@ -144,6 +135,7 @@ This plugin for collectd provides network latency statistics.
 Summary:       PostgreSQL module for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}
+BuildRequires: postgresql-devel
 %description postgresql
 PostgreSQL querying plugin. This plugins provides data of issued commands,
 called handlers and database traffic.
@@ -153,6 +145,7 @@ called handlers and database traffic.
 Summary:       RRDTool module for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}, rrdtool
+BuildRequires: rrdtool-devel
 %description rrdtool
 This plugin for collectd provides rrdtool support.
 
@@ -162,6 +155,7 @@ This plugin for collectd provides rrdtool support.
 Summary:       Libsensors module for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}, lm_sensors
+BuildRequires: lm_sensors-devel
 %description sensors
 This plugin for collectd provides querying of sensors supported by
 lm_sensors.
@@ -171,6 +165,7 @@ lm_sensors.
 Summary:        SNMP module for collectd
 Group:          System Environment/Daemons
 Requires:       collectd = %{version}-%{release}, net-snmp
+BuildRequires:  net-snmp-devel
 %description snmp
 This plugin for collectd provides querying of net-snmp.
 
@@ -190,6 +185,7 @@ collectd.
 Summary:       Libvirt plugin for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}
+BuildRequires: libvirt-devel
 %description virt
 This plugin collects information from virtualized guests.
 %endif
