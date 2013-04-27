@@ -26,6 +26,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildRequires: libxml2-devel
 BuildRequires: curl-devel
+BuildRequires: yajl-devel
 %if 0%{?fedora} >= 8
 BuildRequires: perl-libs, perl-devel
 %else
@@ -203,7 +204,6 @@ sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
     --disable-static \
     --disable-ascent \
     --disable-apple_sensors \
-    --disable-curl_json  \
     --disable-dbi  \
     --disable-gmond \
     --disable-ipvs \
@@ -233,6 +233,7 @@ sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
     --enable-cpufreq \
     --enable-csv \
     --enable-curl \
+    --enable-curl_json  \
     --enable-curl_xml \
     --enable-df \
     --enable-disk \
@@ -518,6 +519,7 @@ fi
 %{_libdir}/collectd/bind.so
 %{_libdir}/collectd/conntrack.so
 %{_libdir}/collectd/curl.so
+%{_libdir}/collectd/curl_json.so
 %{_libdir}/collectd/fscache.so
 %{_libdir}/collectd/match_regex.so
 %{_libdir}/collectd/match_timediff.so
@@ -669,6 +671,7 @@ fi
 - update to 5.3.0
   http://mailman.verplant.org/pipermail/collectd/2013-April/005749.html
 - enable tail_csv plugin
+- enable curl_json plugin
 - filter plugins from Provides
 
 * Mon Apr 22 2013 Alan Pevec <apevec@redhat.com> 5.2.2-1
