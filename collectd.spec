@@ -27,6 +27,7 @@ BuildRequires: perl(ExtUtils::MakeMaker)
 BuildRequires: perl(ExtUtils::Embed)
 BuildRequires: python-devel
 BuildRequires: libgcrypt-devel
+BuildRequires: autoconf, automake
 Requires(post):   systemd
 Requires(preun):  systemd
 Requires(postun): systemd
@@ -399,8 +400,10 @@ It graphs the bit-rate and sampling rate as you play songs.
 
 
 %prep
+# update for aarch64
 %setup -q
 %patch0 -p1
+autoreconf --force
 
 sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
 
