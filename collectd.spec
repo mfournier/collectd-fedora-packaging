@@ -308,12 +308,7 @@ sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
 %{__make} install DESTDIR="%{buildroot}"
 
 %{__install} -Dp -m0644 src/collectd.conf %{buildroot}%{_sysconfdir}/collectd.conf
-%if 0%{?fedora} >= 15
 %{__install} -Dp -m0644 %{SOURCE3} %{buildroot}%{_unitdir}/collectd.service
-%else
-%{__install} -Dp -m0755 contrib/fedora/init.d-collectd %{buildroot}%{_initrddir}/collectd
-%endif
-
 %{__install} -d -m0755 %{buildroot}%{_localstatedir}/lib/collectd/rrd
 %{__install} -d -m0755 %{buildroot}/%{_datadir}/collectd/collection3/
 %{__install} -d -m0755 %{buildroot}/%{_sysconfdir}/httpd/conf.d/
