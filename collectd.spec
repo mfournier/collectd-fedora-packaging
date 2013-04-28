@@ -28,7 +28,6 @@ BuildRequires: curl-devel
 BuildRequires: yajl-devel
 BuildRequires: perl(ExtUtils::MakeMaker)
 BuildRequires: perl(ExtUtils::Embed)
-BuildRequires: iptables-devel
 BuildRequires: python-devel
 BuildRequires: libgcrypt-devel
 Requires(post):   systemd
@@ -123,6 +122,15 @@ Requires:      collectd = %{version}-%{release}
 BuildRequires: OpenIPMI-devel
 %description ipmi
 This plugin for collectd provides IPMI support.
+
+
+%package iptables
+Summary:       Iptables plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: iptables-devel
+%description iptables
+This plugin collects data from iptables counters.
 
 
 %package ipvs
@@ -513,7 +521,6 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %{_libdir}/collectd/fscache.so
 %{_libdir}/collectd/hddtemp.so
 %{_libdir}/collectd/interface.so
-%{_libdir}/collectd/iptables.so
 %{_libdir}/collectd/irq.so
 %{_libdir}/collectd/load.so
 %{_libdir}/collectd/logfile.so
@@ -628,6 +635,10 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %files ipmi
 %{_libdir}/collectd/ipmi.so
 %config(noreplace) %{_sysconfdir}/collectd.d/ipmi.conf
+
+
+%files iptables
+%{_libdir}/collectd/iptables.so
 
 
 %files ipvs
