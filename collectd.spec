@@ -23,9 +23,6 @@ Source97: rrdtool.conf
 
 Patch0: %{name}-include-collectd.d.patch
 
-BuildRequires: libxml2-devel
-BuildRequires: curl-devel
-BuildRequires: yajl-devel
 BuildRequires: perl(ExtUtils::MakeMaker)
 BuildRequires: perl(ExtUtils::Embed)
 BuildRequires: python-devel
@@ -65,9 +62,40 @@ This plugin collects data provided by Apache's 'mod_status'.
 Summary:       Ascent plugin for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}
+BuildRequires: curl-devel
+BuildRequires: libxml2-devel
 %description ascent
 This plugin collects data about an Ascent server,
 a free server for the "World of Warcraft" game.
+
+
+%package curl
+Summary:       Curl plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: curl-devel
+%description curl
+This plugin reads webpages with curl
+
+
+%package curl_json
+Summary:       Curl JSON plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: curl-devel
+BuildRequires: yajl-devel
+%description curl_json
+This plugin retrieves JSON data via curl.
+
+
+%package curl_xml
+Summary:       Curl XML plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: curl-devel
+BuildRequires: libxml2-devel
+%description curl_xml
+This plugin retrieves XML data via curl.
 
 
 %package dbi
@@ -324,6 +352,7 @@ Summary:       Libvirt plugin for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}
 BuildRequires: libvirt-devel
+BuildRequires: libxml2-devel
 %description virt
 This plugin collects information from virtualized guests.
 %endif
@@ -509,9 +538,6 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %{_libdir}/collectd/cpu.so
 %{_libdir}/collectd/cpufreq.so
 %{_libdir}/collectd/csv.so
-%{_libdir}/collectd/curl.so
-%{_libdir}/collectd/curl_json.so
-%{_libdir}/collectd/curl_xml.so
 %{_libdir}/collectd/df.so
 %{_libdir}/collectd/disk.so
 %{_libdir}/collectd/entropy.so
@@ -607,6 +633,18 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 %files ascent
 %{_libdir}/collectd/ascent.so
+
+
+%files curl
+%{_libdir}/collectd/curl.so
+
+
+%files curl_json
+%{_libdir}/collectd/curl_json.so
+
+
+%files curl_xml
+%{_libdir}/collectd/curl_xml.so
 
 
 %files dbi
