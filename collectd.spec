@@ -43,6 +43,16 @@ files it's very fast and easy on the system. Also, the statistics are very
 fine grained since the files are updated every 10 seconds.
 
 
+%package amqp
+Summary:       AMQP plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: librabbitmq-devel
+%description amqp
+This plugin can be used to communicate with other instances of collectd
+or third party applications using an AMQP message broker.
+
+
 %package apache
 Summary:       Apache plugin for collectd
 Group:         System Environment/Daemons
@@ -51,8 +61,27 @@ Requires:      collectd = %{version}-%{release}
 This plugin collects data provided by Apache's 'mod_status'.
 
 
+%package ascent
+Summary:       Ascent plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+%description ascent
+This plugin collects data about an Ascent server,
+a free server for the "World of Warcraft" game.
+
+
+%package dbi
+Summary:       DBI plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: libdbi-devel
+%description dbi
+This plugin uses the dbi library to connect to various databases,
+execute SQL statements and read back the results.
+
+
 %package dns
-Summary:       DNS traffic analysis module for collectd
+Summary:       DNS traffic analysis plugin for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}
 BuildRequires: libpcap-devel
@@ -68,8 +97,26 @@ Requires:      collectd = %{version}-%{release}, spamassassin
 This plugin collects data provided by spamassassin.
 
 
+%package generic-jmx
+Summary:       Generic JMX plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd-java = %{version}-%{release}
+%description generic-jmx
+This plugin collects data provided by JMX.
+
+
+%package gmond
+Summary:       Gmond plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}, spamassassin
+BuildRequires: ganglia-devel
+%description gmond
+This plugin receives multicast traffic sent by gmond,
+the statistics collection daemon of Ganglia.
+
+
 %package ipmi
-Summary:       IPMI module for collectd
+Summary:       IPMI plugin for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}
 BuildRequires: OpenIPMI-devel
@@ -77,14 +124,62 @@ BuildRequires: OpenIPMI-devel
 This plugin for collectd provides IPMI support.
 
 
+%package ipvs
+Summary:       IPVS plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+%description ipvs
+This plugin collects data from IPVS.
+
+
+%package java
+Summary:       Java bindings for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: java-devel
+BuildRequires: jpackage-utils
+%description java
+These are the Java bindings for collectd.
+
+
+%package memcachec
+Summary:       Memcachec plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: libmemcached-devel
+%description memcachec
+This plugin connects to a memcached server, queries one or more
+given pages and parses the returned data according to user specification.
+
+
+%package modbus
+Summary:       Modbus plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: libmodbus-devel
+%description modbus
+This plugin connects to a Modbus "slave" via Modbus/TCP
+and reads register values.
+
+
 %package mysql
-Summary:       MySQL module for collectd
+Summary:       MySQL plugin for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}
 BuildRequires: mysql-devel
 %description mysql
-MySQL querying plugin. This plugins provides data of issued commands,
+MySQL querying plugin. This plugin provides data of issued commands,
 called handlers and database traffic.
+
+
+%package netlink
+Summary:       Netlink plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: iproute-devel
+%description netlink
+This plugin uses a netlink socket to query the Linux kernel
+about statistics of various interface and routing aspects.
 
 
 %package nginx
@@ -92,12 +187,32 @@ Summary:       Nginx plugin for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}
 %description nginx
-This plugin gets data provided by nginx.
+This plugin collects data provided by Nginx.
+
+
+%package notify_desktop
+Summary:       Notify desktop plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: libnotify-devel
+%description notify_desktop
+This plugin sends a desktop notification to a notification daemon,
+as defined in the Desktop Notification Specification.
+
+
+%package notify_email
+Summary:       Notify email plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: libesmtp-devel
+%description notify_email
+This plugin uses the ESMTP library to send
+notifications to a configured email address.
 
 
 %ifnarch s390 s390x
 %package nut
-Summary:       Network UPS Tools module for collectd
+Summary:       Network UPS Tools plugin for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}
 BuildRequires: nut-devel
@@ -112,11 +227,21 @@ Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}
 Requires: perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 %description -n perl-Collectd
-This package contains Perl bindings and plugin for collectd.
+This package contains the Perl bindings and plugin for collectd.
+
+
+%package pinba
+Summary:       Pinba plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: protobuf-c-devel
+%description pinba
+This plugin receives profiling information from Pinba,
+an extension for the PHP interpreter.
 
 
 %package ping
-Summary:       Ping module for collectd
+Summary:       Ping plugin for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}
 BuildRequires: liboping-devel
@@ -125,7 +250,7 @@ This plugin for collectd provides network latency statistics.
 
 
 %package postgresql
-Summary:       PostgreSQL module for collectd
+Summary:       PostgreSQL plugin for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}
 BuildRequires: postgresql-devel
@@ -134,10 +259,20 @@ PostgreSQL querying plugin. This plugins provides data of issued commands,
 called handlers and database traffic.
 
 
-%package rrdtool
-Summary:       RRDTool module for collectd
+%package rrdcached
+Summary:       RRDCacheD plugin for collectd
 Group:         System Environment/Daemons
-Requires:      collectd = %{version}-%{release}, rrdtool
+Requires:      collectd = %{version}-%{release}
+BuildRequires: rrdtool-devel
+%description rrdcached
+This plugin uses the RRDtool accelerator daemon, rrdcached(1),
+to store values to RRD files in an efficient manner.
+
+
+%package rrdtool
+Summary:       RRDTool plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
 BuildRequires: rrdtool-devel
 %description rrdtool
 This plugin for collectd provides rrdtool support.
@@ -155,23 +290,22 @@ lm_sensors.
 %endif
 
 %package snmp
-Summary:        SNMP module for collectd
-Group:          System Environment/Daemons
-Requires:       collectd = %{version}-%{release}, net-snmp
-BuildRequires:  net-snmp-devel
+Summary:       SNMP module for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}, net-snmp
+BuildRequires: net-snmp-devel
 %description snmp
 This plugin for collectd provides querying of net-snmp.
 
 
-%package web
-Summary:        Contrib web interface to viewing rrd files
-Group:          System Environment/Daemons
-Requires:       collectd = %{version}-%{release}
-Requires:       collectd-rrdtool = %{version}-%{release}
-Requires:       perl-HTML-Parser, perl-Regexp-Common, rrdtool-perl, httpd
-%description web
-This package will allow for a simple web interface to view rrd files created by
-collectd.
+%package varnish
+Summary:       Varnish plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: varnish-libs-devel
+%description varnish
+This plugin collects information about Varnish, an HTTP accelerator.
+
 
 %ifnarch ppc ppc64 sparc sparc64
 %package virt
@@ -183,6 +317,37 @@ BuildRequires: libvirt-devel
 This plugin collects information from virtualized guests.
 %endif
 
+
+%package web
+Summary:       Contrib web interface to viewing rrd files
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+Requires:      collectd-rrdtool = %{version}-%{release}
+Requires:      perl-HTML-Parser, perl-Regexp-Common, rrdtool-perl, httpd
+%description web
+This package will allow for a simple web interface to view rrd files created by
+collectd.
+
+
+%package write_riemann
+Summary:       Riemann output plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: protobuf-c-devel
+%description write_riemann
+This plugin can send data to Riemann.
+
+
+%package xmms
+Summary:       XMMS plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: xmms-devel
+%description xmms
+This is a collectd plugin for the XMMS music player.
+It graphs the bit-rate and sampling rate as you play songs.
+
+
 %prep
 %setup -q
 %patch0 -p1
@@ -192,114 +357,32 @@ sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
 
 %build
 %configure CFLAGS="%{optflags} -DLT_LAZY_OR_NOW='RTLD_LAZY|RTLD_GLOBAL'" \
+    --enable-all-plugins \
     --disable-static \
-    --disable-ascent \
     --disable-apple_sensors \
-    --disable-dbi  \
-    --disable-gmond \
-    --disable-ipvs \
-    --disable-java \
-    --disable-memcachec \
-    --disable-modbus \
+    --disable-lpar \
     --disable-netapp \
-    --disable-netlink \
-    --disable-notify_desktop \
-    --disable-notify_email \
-    --disable-onewire \
-    --disable-oracle \
-    --disable-pinba \
-    --disable-routeros \
-    --disable-rrdcached \
-    --disable-tape \
-    --disable-tokyotyrant \
-    --disable-xmms \
-    --disable-zfs_arc \
-    --enable-apache \
-    --enable-apcups \
-    --enable-battery \
-    --enable-bind \
-    --enable-conntrack \
-    --enable-contextswitch \
-    --enable-cpu \
-    --enable-cpufreq \
-    --enable-csv \
-    --enable-curl \
-    --enable-curl_json  \
-    --enable-curl_xml \
-    --enable-df \
-    --enable-disk \
-    --enable-dns \
-    --enable-email \
-    --enable-entropy \
-    --enable-exec \
-    --enable-filecount \
-    --enable-fscache \
-    --enable-hddtemp \
-    --enable-interface \
-    --enable-ipmi \
-    --enable-iptables \
-    --enable-irq \
-    --enable-libvirt \
-    --enable-load \
-    --enable-logfile \
-    --enable-madwifi \
-    --enable-match_empty_counter \
-    --enable-match_hashed \
-    --enable-match_regex \
-    --enable-match_timediff \
-    --enable-match_value \
-    --enable-mbmon \
-    --enable-memcached \
-    --enable-memory \
-    --enable-multimeter \
-    --enable-mysql \
-    --enable-network \
-    --enable-nfs \
-    --enable-nginx \
-    --enable-ntpd \
-%ifnarch s390 s390x
-    --enable-nut \
-%else
+%ifarch s390 s390x
     --disable-nut \
 %endif
-    --enable-olsrd \
-    --enable-openvpn \
-    --enable-perl \
-    --enable-ping \
-    --enable-postgresql \
-    --enable-powerdns \
-    --enable-processes \
-    --enable-protocols \
-    --enable-python \
-    --enable-rrdtool \
-%ifnarch ppc ppc64 sparc sparc64
-    --enable-sensors \
+    --disable-onewire \
+    --disable-oracle \
+    --disable-pf \
+    --disable-redis \
+    --disable-routeros \
+%ifarch ppc ppc64 sparc sparc64
+    --disable-sensors \
 %endif
-    --enable-serial \
-    --enable-snmp \
-    --enable-swap \
-    --enable-syslog \
-    --enable-table \
-    --enable-tail \
-    --enable-target_notification \
-    --enable-target_replace \
-    --enable-target_scale \
-    --enable-target_set \
-    --enable-tcpconns \
-    --enable-teamspeak2 \
-    --enable-ted \
-    --enable-thermal \
-    --enable-unixsock \
-    --enable-uptime \
-    --enable-users \
-    --enable-uuid \
-    --enable-vmem \
-    --enable-vserver \
-    --enable-wireless \
-    --enable-write_http \
+    --disable-tape \
+    --disable-tokyotyrant \
+    --disable-write_mongodb \
+    --disable-write_redis \
+    --disable-zfs_arc \
     --with-libiptc \
+    --with-java=%{java_home}/ \
     --with-python \
     --with-perl-bindings=INSTALLDIRS=vendor
+
 %{__make} %{?_smp_mflags}
 
 
@@ -502,59 +585,101 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %doc %{_mandir}/man1/collectdmon.1*
 %doc %{_mandir}/man5/collectd.conf.5*
 %doc %{_mandir}/man5/collectd-exec.5*
-%doc %{_mandir}/man5/collectd-java.5*
 %doc %{_mandir}/man5/collectd-python.5*
 %doc %{_mandir}/man5/collectd-threshold.5*
 %doc %{_mandir}/man5/collectd-unixsock.5*
 %doc %{_mandir}/man5/types.db.5*
 
+%files amqp
+%{_libdir}/collectd/amqp.so
+
+
 %files apache
-%defattr(-, root, root, -)
 %{_libdir}/collectd/apache.so
 %config(noreplace) %{_sysconfdir}/collectd.d/apache.conf
 
 
+%files ascent
+%{_libdir}/collectd/ascent.so
+
+
+%files dbi
+%{_libdir}/collectd/dbi.so
+
+
 %files dns
-%defattr(-, root, root, -)
 %{_libdir}/collectd/dns.so
 %config(noreplace) %{_sysconfdir}/collectd.d/dns.conf
 
 
 %files email
-%defattr(-, root, root, -)
 %{_libdir}/collectd/email.so
 %config(noreplace) %{_sysconfdir}/collectd.d/email.conf
 %doc %{_mandir}/man5/collectd-email.5*
 
 
+%files generic-jmx
+%{_datadir}/collectd/java/generic-jmx.jar
+
+
+%files gmond
+%{_libdir}/collectd/gmond.so
+
+
 %files ipmi
-%defattr(-, root, root, -)
 %{_libdir}/collectd/ipmi.so
 %config(noreplace) %{_sysconfdir}/collectd.d/ipmi.conf
 
 
+%files ipvs
+%{_libdir}/collectd/ipvs.so
+
+
+%files java
+%{_libdir}/collectd/java.so
+%dir %{_datadir}/collectd/java/
+%{_datadir}/collectd/java/collectd-api.jar
+%doc %{_mandir}/man5/collectd-java.5*
+
+
+%files memcachec
+%{_libdir}/collectd/memcachec.so
+
+
+%files modbus
+%{_libdir}/collectd/modbus.so
+
+
 %files mysql
-%defattr(-, root, root, -)
 %{_libdir}/collectd/mysql.so
 %config(noreplace) %{_sysconfdir}/collectd.d/mysql.conf
 
 
+%files netlink
+%{_libdir}/collectd/netlink.so
+
+
 %files nginx
-%defattr(-, root, root, -)
 %{_libdir}/collectd/nginx.so
 %config(noreplace) %{_sysconfdir}/collectd.d/nginx.conf
 
 
+%files notify_desktop
+%{_libdir}/collectd/notify_desktop.so
+
+
+%files notify_email
+%{_libdir}/collectd/notify_email.so
+
+
 %ifnarch s390 s390x
 %files nut
-%defattr(-, root, root, -)
 %{_libdir}/collectd/nut.so
 %config(noreplace) %{_sysconfdir}/collectd.d/nut.conf
 %endif
 
 
 %files -n perl-Collectd
-%defattr(-, root, root, -)
 %doc perl-examples/*
 %{_libdir}/collectd/perl.so
 %{perl_vendorlib}/Collectd.pm
@@ -564,60 +689,76 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %doc %{_mandir}/man3/Collectd::Unixsock.3pm*
 
 
+%files pinba
+%{_libdir}/collectd/pinba.so
+
+
 %files ping
-%defattr(-, root, root, -)
 %{_libdir}/collectd/ping.so
 %config(noreplace) %{_sysconfdir}/collectd.d/ping.conf
 
 
 %files postgresql
-%defattr(-, root, root, -)
 %{_libdir}/collectd/postgresql.so
 %config(noreplace) %{_sysconfdir}/collectd.d/postgresql.conf
 %{_datadir}/collectd/postgresql_default.conf
 
 
+%files rrdcached
+%{_libdir}/collectd/rrdcached.so
+
+
 %files rrdtool
-%defattr(-, root, root, -)
 %{_libdir}/collectd/rrdtool.so
 %config(noreplace) %{_sysconfdir}/collectd.d/rrdtool.conf
 
 
 %ifnarch ppc ppc64 sparc sparc64
 %files sensors
-%defattr(-, root, root, -)
 %{_libdir}/collectd/sensors.so
 %config(noreplace) %{_sysconfdir}/collectd.d/sensors.conf
 %endif
 
+
 %files snmp
-%defattr(-, root, root, -)
 %{_libdir}/collectd/snmp.so
 %config(noreplace) %{_sysconfdir}/collectd.d/snmp.conf
 %doc %{_mandir}/man5/collectd-snmp.5*
 
 
+%files varnish
+%{_libdir}/collectd/varnish.so
+
+
+%ifnarch ppc ppc64 sparc sparc64
+%files virt
+%{_libdir}/collectd/libvirt.so
+%config(noreplace) %{_sysconfdir}/collectd.d/libvirt.conf
+%endif
+
+
 %files web
-%defattr(-, root, root, -)
 %{_datadir}/collectd/collection3/
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/collectd.conf
 %config(noreplace) %{_sysconfdir}/collection.conf
 
-%ifnarch ppc ppc64 sparc sparc64
-%files virt
-%defattr(-, root, root, -)
-%{_libdir}/collectd/libvirt.so
-%config(noreplace) %{_sysconfdir}/collectd.d/libvirt.conf
-%endif
+
+%files write_riemann
+%{_libdir}/collectd/write_riemann.so
+
+
+%files xmms
+%{_libdir}/collectd/xmms.so
+
 
 %changelog
 * Sat Apr 27 2013 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.3.0-1
 - update to 5.3.0
   http://mailman.verplant.org/pipermail/collectd/2013-April/005749.html
-- enable tail_csv plugin
-- enable curl_json plugin
+- enable all plugins we can enable
 - filter plugins from Provides
 - use new systemd macros (#850062)
+- modernize specfile
 
 * Mon Apr 22 2013 Alan Pevec <apevec@redhat.com> 5.2.2-1
 - update to 5.2.2
