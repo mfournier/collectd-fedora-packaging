@@ -19,6 +19,7 @@ Source93: mysql.conf
 Source94: nginx.conf
 Source95: sensors.conf
 Source96: snmp.conf
+Source97: rrdtool.conf
 
 Patch0: %{name}-include-collectd.d.patch
 
@@ -428,26 +429,19 @@ cp %{SOURCE93} %{buildroot}%{_sysconfdir}/collectd.d/mysql.conf
 cp %{SOURCE94} %{buildroot}%{_sysconfdir}/collectd.d/nginx.conf
 cp %{SOURCE95} %{buildroot}%{_sysconfdir}/collectd.d/sensors.conf
 cp %{SOURCE96} %{buildroot}%{_sysconfdir}/collectd.d/snmp.conf
+cp %{SOURCE97} %{buildroot}%{_sysconfdir}/collectd.d/rrdtool.conf
 
 # configs for subpackaged plugins
 %ifnarch s390 s390x
-for p in dns ipmi libvirt nut perl ping postgresql rrdtool
+for p in dns ipmi libvirt nut perl ping postgresql
 %else
-for p in dns ipmi libvirt perl ping postgresql rrdtool
+for p in dns ipmi libvirt perl ping postgresql
 %endif
 do
 %{__cat} > %{buildroot}%{_sysconfdir}/collectd.d/$p.conf <<EOF
 LoadPlugin $p
 EOF
 done
-%{__cat} >> %{buildroot}%{_sysconfdir}/collectd.d/rrdtool.conf <<EOF
-<Plugin rrdtool>
-       DataDir "/var/lib/collectd/rrd"
-       CacheTimeout 120
-       CacheFlush   900
-</Plugin>
-EOF
-
 
 # *.la files shouldn't be distributed.
 rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
