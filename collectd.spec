@@ -142,6 +142,7 @@ BuildRequires: jpackage-utils
 These are the Java bindings for collectd.
 
 
+%if 0%{?fedora} <= 18
 %package memcachec
 Summary:       Memcachec plugin for collectd
 Group:         System Environment/Daemons
@@ -150,6 +151,7 @@ BuildRequires: libmemcached-devel
 %description memcachec
 This plugin connects to a memcached server, queries one or more
 given pages and parses the returned data according to user specification.
+%endif
 
 
 %package modbus
@@ -362,6 +364,9 @@ sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
     --disable-apple_sensors \
     --disable-lpar \
     --disable-netapp \
+%if 0%{?fedora} >= 19
+    --disable-memcachec \
+%endif
 %ifarch s390 s390x
     --disable-nut \
 %endif
@@ -641,9 +646,10 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %{_datadir}/collectd/java/collectd-api.jar
 %doc %{_mandir}/man5/collectd-java.5*
 
-
+%if 0%{?fedora} <= 18
 %files memcachec
 %{_libdir}/collectd/memcachec.so
+%endif
 
 
 %files modbus
