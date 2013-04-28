@@ -69,6 +69,16 @@ This plugin collects data about an Ascent server,
 a free server for the "World of Warcraft" game.
 
 
+%package bind
+Summary:       Bind plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: curl-devel
+BuildRequires: libxml2-devel
+%description bind
+This plugin retrieves statistics from the BIND dns server.
+
+
 %package curl
 Summary:       Curl plugin for collectd
 Group:         System Environment/Daemons
@@ -532,7 +542,6 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %{_libdir}/collectd/aggregation.so
 %{_libdir}/collectd/apcups.so
 %{_libdir}/collectd/battery.so
-%{_libdir}/collectd/bind.so
 %{_libdir}/collectd/conntrack.so
 %{_libdir}/collectd/contextswitch.so
 %{_libdir}/collectd/cpu.so
@@ -633,6 +642,10 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 %files ascent
 %{_libdir}/collectd/ascent.so
+
+
+%files bind
+%{_libdir}/collectd/bind.so
 
 
 %files curl
