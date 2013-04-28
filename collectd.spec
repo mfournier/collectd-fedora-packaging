@@ -313,12 +313,7 @@ sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
 %{__install} -d -m0755 %{buildroot}/%{_datadir}/collectd/collection3/
 %{__install} -d -m0755 %{buildroot}/%{_sysconfdir}/httpd/conf.d/
 
-
-# Convert docs to UTF-8
 find contrib/ -type f -exec %{__chmod} a-x {} \;
-for f in contrib/README ChangeLog ; do
-  mv $f $f.old; iconv -f iso-8859-1 -t utf-8 < $f.old > $f; rm $f.old
-done
 
 # Remove Perl hidden .packlist files.
 find %{buildroot} -name .packlist -exec rm {} \;
