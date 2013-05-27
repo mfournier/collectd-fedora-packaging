@@ -4,7 +4,7 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.3.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -226,7 +226,7 @@ called handlers and database traffic.
 Summary:       Netlink plugin for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}
-BuildRequires: iproute-devel
+BuildRequires: iproute-static
 %description netlink
 This plugin uses a netlink socket to query the Linux kernel
 about statistics of various interface and routing aspects.
@@ -817,6 +817,9 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Mon May 27 2013 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.3.0-2
+- BuildRequire static version of iproute (#967214)
+
 * Sat Apr 27 2013 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.3.0-1
 - update to 5.3.0
   http://mailman.verplant.org/pipermail/collectd/2013-April/005749.html
