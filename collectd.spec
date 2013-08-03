@@ -4,7 +4,7 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.3.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -817,6 +817,9 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 5.3.0-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Wed Jul 17 2013 Petr Pisar <ppisar@redhat.com> - 5.3.0-4
 - Perl 5.18 rebuild
 
