@@ -839,6 +839,15 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
   http://mailman.verplant.org/pipermail/collectd/2013-August/005906.html
 - Enable new cgroups, statsd and lvm plugins
 
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 5.3.0-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
+* Wed Jul 17 2013 Petr Pisar <ppisar@redhat.com> - 5.3.0-4
+- Perl 5.18 rebuild
+
+* Mon Jun 03 2013 Kevin Fenzi <kevin@scrye.com> 5.3.0-3
+- Rebuild for new ganglia
+
 * Mon May 27 2013 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.3.0-2
 - BuildRequire static version of iproute (#967214)
 
