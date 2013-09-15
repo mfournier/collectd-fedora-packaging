@@ -3,8 +3,8 @@
 
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
-Version: 5.3.0
-Release: 2%{?dist}
+Version: 5.4.0
+Release: 1%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -31,7 +31,6 @@ BuildRequires: autoconf, automake
 Requires(post):   systemd
 Requires(preun):  systemd
 Requires(postun): systemd
-
 
 %description
 collectd is a small daemon written in C for performance.  It reads various
@@ -190,6 +189,15 @@ BuildRequires: jpackage-utils
 These are the Java bindings for collectd.
 
 
+%package lvm
+Summary:       LVM plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: lvm2-devel
+%description lvm
+This plugin collects information from lvm
+
+
 %if 0%{?fedora} <= 18
 %package memcachec
 Summary:       Memcachec plugin for collectd
@@ -226,7 +234,7 @@ called handlers and database traffic.
 Summary:       Netlink plugin for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}
-BuildRequires: iproute-static
+BuildRequires: iproute-static, libmnl-devel
 %description netlink
 This plugin uses a netlink socket to query the Linux kernel
 about statistics of various interface and routing aspects.
@@ -400,9 +408,9 @@ It graphs the bit-rate and sampling rate as you play songs.
 
 
 %prep
-# update for aarch64
 %setup -q
 %patch0 -p1
+# update for aarch64
 autoreconf --force
 
 sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
@@ -413,11 +421,13 @@ sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
     --enable-all-plugins \
     --disable-static \
     --disable-apple_sensors \
+    --disable-aquaero \
     --disable-lpar \
-    --disable-netapp \
+    --disable-mic \
 %if 0%{?fedora} >= 19
     --disable-memcachec \
 %endif
+    --disable-netapp \
 %ifarch s390 s390x
     --disable-nut \
 %endif
@@ -429,6 +439,7 @@ sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
 %ifarch ppc ppc64 sparc sparc64
     --disable-sensors \
 %endif
+    --disable-sigrok \
     --disable-tape \
     --disable-tokyotyrant \
     --disable-write_mongodb \
@@ -545,6 +556,7 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %{_libdir}/collectd/aggregation.so
 %{_libdir}/collectd/apcups.so
 %{_libdir}/collectd/battery.so
+%{_libdir}/collectd/cgroups.so
 %{_libdir}/collectd/conntrack.so
 %{_libdir}/collectd/contextswitch.so
 %{_libdir}/collectd/cpu.so
@@ -584,6 +596,7 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %{_libdir}/collectd/protocols.so
 %{_libdir}/collectd/python.so
 %{_libdir}/collectd/serial.so
+%{_libdir}/collectd/statsd.so
 %{_libdir}/collectd/swap.so
 %{_libdir}/collectd/syslog.so
 %{_libdir}/collectd/table.so
@@ -705,6 +718,10 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %{_datadir}/collectd/java/collectd-api.jar
 %doc %{_mandir}/man5/collectd-java.5*
 
+%files lvm
+%{_libdir}/collectd/lvm.so
+
+
 %if 0%{?fedora} <= 18
 %files memcachec
 %{_libdir}/collectd/memcachec.so
@@ -817,6 +834,11 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Sun Sep 15 2013 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.0-1
+- Update to 5.4.0
+  http://mailman.verplant.org/pipermail/collectd/2013-August/005906.html
+- Enable new cgroups, statsd and lvm plugins
+
 * Mon May 27 2013 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.3.0-2
 - BuildRequire static version of iproute (#967214)
 
