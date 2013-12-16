@@ -4,7 +4,7 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.4.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -27,7 +27,6 @@ BuildRequires: perl(ExtUtils::MakeMaker)
 BuildRequires: perl(ExtUtils::Embed)
 BuildRequires: python-devel
 BuildRequires: libgcrypt-devel
-BuildRequires: autoconf, automake
 Requires(post):   systemd
 Requires(preun):  systemd
 Requires(postun): systemd
@@ -198,7 +197,6 @@ BuildRequires: lvm2-devel
 This plugin collects information from lvm
 
 
-%if 0%{?fedora} <= 18
 %package memcachec
 Summary:       Memcachec plugin for collectd
 Group:         System Environment/Daemons
@@ -207,7 +205,6 @@ BuildRequires: libmemcached-devel
 %description memcachec
 This plugin connects to a memcached server, queries one or more
 given pages and parses the returned data according to user specification.
-%endif
 
 
 %package modbus
@@ -410,8 +407,6 @@ It graphs the bit-rate and sampling rate as you play songs.
 %prep
 %setup -q
 %patch0 -p1
-# update for aarch64
-autoreconf --force
 
 sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
 
@@ -424,9 +419,6 @@ sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
     --disable-aquaero \
     --disable-lpar \
     --disable-mic \
-%if 0%{?fedora} >= 19
-    --disable-memcachec \
-%endif
     --disable-netapp \
 %ifarch s390 s390x
     --disable-nut \
@@ -722,10 +714,8 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %{_libdir}/collectd/lvm.so
 
 
-%if 0%{?fedora} <= 18
 %files memcachec
 %{_libdir}/collectd/memcachec.so
-%endif
 
 
 %files modbus
@@ -834,6 +824,10 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Sat Dec 14 2013 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.0-2
+- Enable memcached plugin (#1036422)
+- Stop running autoreconf
+
 * Sun Sep 15 2013 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.0-1
 - Update to 5.4.0
   http://mailman.verplant.org/pipermail/collectd/2013-August/005906.html
