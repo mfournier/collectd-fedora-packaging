@@ -3,8 +3,8 @@
 
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
-Version: 5.4.0
-Release: 3%{?dist}
+Version: 5.4.1
+Release: 1%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -824,6 +824,9 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Tue Jan 28 2014 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.1-1
+- Upstream released new version: http://collectd.org/news.shtml#news95
+
 * Thu Jan 23 2014 Kevin Fenzi <kevin@scrye.com> 5.4.0-3
 - Rebuild for new libdbi
 
