@@ -265,17 +265,6 @@ This plugin uses the ESMTP library to send
 notifications to a configured email address.
 
 
-%ifnarch s390 s390x
-%package nut
-Summary:       Network UPS Tools plugin for collectd
-Group:         System Environment/Daemons
-Requires:      collectd = %{version}-%{release}
-BuildRequires: nut-devel
-%description nut
-This plugin for collectd provides Network UPS Tools support.
-%endif
-
-
 %package -n perl-Collectd
 Summary:       Perl bindings for collectd
 Group:         System Environment/Daemons
@@ -420,9 +409,7 @@ sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
     --disable-lpar \
     --disable-mic \
     --disable-netapp \
-%ifarch s390 s390x
     --disable-nut \
-%endif
     --disable-onewire \
     --disable-oracle \
     --disable-pf \
@@ -485,11 +472,7 @@ cp %{SOURCE96} %{buildroot}%{_sysconfdir}/collectd.d/snmp.conf
 cp %{SOURCE97} %{buildroot}%{_sysconfdir}/collectd.d/rrdtool.conf
 
 # configs for subpackaged plugins
-%ifnarch s390 s390x
-for p in dns ipmi libvirt nut perl ping postgresql
-%else
 for p in dns ipmi libvirt perl ping postgresql
-%endif
 do
 %{__cat} > %{buildroot}%{_sysconfdir}/collectd.d/$p.conf <<EOF
 LoadPlugin $p
@@ -524,9 +507,6 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %exclude %{_sysconfdir}/collectd.d/libvirt.conf
 %exclude %{_sysconfdir}/collectd.d/mysql.conf
 %exclude %{_sysconfdir}/collectd.d/nginx.conf
-%ifnarch s390 s390x
-%exclude %{_sysconfdir}/collectd.d/nut.conf
-%endif
 %exclude %{_sysconfdir}/collectd.d/perl.conf
 %exclude %{_sysconfdir}/collectd.d/ping.conf
 %exclude %{_sysconfdir}/collectd.d/postgresql.conf
@@ -744,13 +724,6 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %{_libdir}/collectd/notify_email.so
 
 
-%ifnarch s390 s390x
-%files nut
-%{_libdir}/collectd/nut.so
-%config(noreplace) %{_sysconfdir}/collectd.d/nut.conf
-%endif
-
-
 %files -n perl-Collectd
 %doc perl-examples/*
 %{_libdir}/collectd/perl.so
@@ -825,7 +798,7 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 %changelog
 * Mon Mar 03 2014 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.1-2
-- Rebuild for new nut
+- Disable nut plugin (#1071919)
 
 * Tue Jan 28 2014 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.1-1
 - Upstream released new version: http://collectd.org/news.shtml#news95
