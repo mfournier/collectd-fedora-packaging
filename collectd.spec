@@ -4,15 +4,14 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.4.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
 
 Source: http://collectd.org/files/%{name}-%{version}.tar.bz2
 Source1: collectd-httpd.conf
-Source2: collection.conf
-Source3: collectd.service
+Source2: collectd.service
 Source91: apache.conf
 Source92: email.conf
 Source93: mysql.conf
@@ -22,6 +21,8 @@ Source96: snmp.conf
 Source97: rrdtool.conf
 
 Patch0: %{name}-include-collectd.d.patch
+Patch1: %{name}-fix-colors-in-collection.conf.patch
+Patch2: %{name}-lvm-do-not-segfault-when-there-are-no-vgs.patch
 
 BuildRequires: perl(ExtUtils::MakeMaker)
 BuildRequires: perl(ExtUtils::Embed)
@@ -265,6 +266,17 @@ This plugin uses the ESMTP library to send
 notifications to a configured email address.
 
 
+%ifnarch s390 s390x
+%package nut
+Summary:       Network UPS Tools plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: nut-devel
+%description nut
+This plugin for collectd provides Network UPS Tools support.
+%endif
+
+
 %package -n perl-Collectd
 Summary:       Perl bindings for collectd
 Group:         System Environment/Daemons
@@ -342,15 +354,6 @@ BuildRequires: net-snmp-devel
 This plugin for collectd provides querying of net-snmp.
 
 
-%package varnish
-Summary:       Varnish plugin for collectd
-Group:         System Environment/Daemons
-Requires:      collectd = %{version}-%{release}
-BuildRequires: varnish-libs-devel
-%description varnish
-This plugin collects information about Varnish, an HTTP accelerator.
-
-
 %ifnarch ppc ppc64 sparc sparc64
 %package virt
 Summary:       Libvirt plugin for collectd
@@ -396,8 +399,10 @@ It graphs the bit-rate and sampling rate as you play songs.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
-sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
+sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in src/libcollectdclient/Makefile.in
 
 
 %build
@@ -409,7 +414,9 @@ sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
     --disable-lpar \
     --disable-mic \
     --disable-netapp \
+%ifarch s390 s390x
     --disable-nut \
+%endif
     --disable-onewire \
     --disable-oracle \
     --disable-pf \
@@ -421,6 +428,7 @@ sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
     --disable-sigrok \
     --disable-tape \
     --disable-tokyotyrant \
+    --disable-varnish \
     --disable-write_mongodb \
     --disable-write_redis \
     --disable-zfs_arc \
@@ -437,7 +445,7 @@ sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in
 %{__make} install DESTDIR="%{buildroot}"
 
 %{__install} -Dp -m0644 src/collectd.conf %{buildroot}%{_sysconfdir}/collectd.conf
-%{__install} -Dp -m0644 %{SOURCE3} %{buildroot}%{_unitdir}/collectd.service
+%{__install} -Dp -m0644 %{SOURCE2} %{buildroot}%{_unitdir}/collectd.service
 %{__install} -d -m0755 %{buildroot}%{_localstatedir}/lib/collectd/rrd
 %{__install} -d -m0755 %{buildroot}/%{_datadir}/collectd/collection3/
 %{__install} -d -m0755 %{buildroot}/%{_sysconfdir}/httpd/conf.d/
@@ -451,10 +459,8 @@ find %{buildroot} -name perllocal.pod -exec rm {} \;
 
 # copy web interface
 cp -ad contrib/collection3/* %{buildroot}/%{_datadir}/collectd/collection3/
-rm -f %{buildroot}/%{_datadir}/collectd/collection3/etc/collection.conf
+cp -pv %{buildroot}%{_datadir}/collectd/collection3/etc/collection.conf %{buildroot}%{_sysconfdir}/collection.conf
 cp %{SOURCE1} %{buildroot}/%{_sysconfdir}/httpd/conf.d/collectd.conf
-cp %{SOURCE2} %{buildroot}%{_sysconfdir}/collection.conf
-ln -s %{_sysconfdir}/collection.conf %{buildroot}/%{_datadir}/collectd/collection3/etc/collection.conf
 chmod +x %{buildroot}/%{_datadir}/collectd/collection3/bin/*.cgi
 
 # Move the Perl examples to a separate directory.
@@ -472,7 +478,11 @@ cp %{SOURCE96} %{buildroot}%{_sysconfdir}/collectd.d/snmp.conf
 cp %{SOURCE97} %{buildroot}%{_sysconfdir}/collectd.d/rrdtool.conf
 
 # configs for subpackaged plugins
+%ifnarch s390 s390x
+for p in dns ipmi libvirt nut perl ping postgresql
+%else
 for p in dns ipmi libvirt perl ping postgresql
+%endif
 do
 %{__cat} > %{buildroot}%{_sysconfdir}/collectd.d/$p.conf <<EOF
 LoadPlugin $p
@@ -507,6 +517,9 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %exclude %{_sysconfdir}/collectd.d/libvirt.conf
 %exclude %{_sysconfdir}/collectd.d/mysql.conf
 %exclude %{_sysconfdir}/collectd.d/nginx.conf
+%ifnarch s390 s390x
+%exclude %{_sysconfdir}/collectd.d/nut.conf
+%endif
 %exclude %{_sysconfdir}/collectd.d/perl.conf
 %exclude %{_sysconfdir}/collectd.d/ping.conf
 %exclude %{_sysconfdir}/collectd.d/postgresql.conf
@@ -724,6 +737,13 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %{_libdir}/collectd/notify_email.so
 
 
+%ifnarch s390 s390x
+%files nut
+%{_libdir}/collectd/nut.so
+%config(noreplace) %{_sysconfdir}/collectd.d/nut.conf
+%endif
+
+
 %files -n perl-Collectd
 %doc perl-examples/*
 %{_libdir}/collectd/perl.so
@@ -771,10 +791,6 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %doc %{_mandir}/man5/collectd-snmp.5*
 
 
-%files varnish
-%{_libdir}/collectd/varnish.so
-
-
 %ifnarch ppc ppc64 sparc sparc64
 %files virt
 %{_libdir}/collectd/libvirt.so
@@ -797,6 +813,13 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Wed Jun 04 2014 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.1-3
+- Enable nut plugin again
+- Disable varnish plugin (#1099363)
+- Don't build libcollectd client with -Werror for now
+  (https://github.com/collectd/collectd/issues/632)
+- LVM plugin: don't segfault when there are no vgs
+
 * Mon Mar 03 2014 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.1-2
 - Disable nut plugin (#1071919)
 
