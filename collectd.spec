@@ -4,7 +4,7 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.4.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -447,8 +447,8 @@ sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in src/libcollectdclient/Ma
 %{__install} -Dp -m0644 src/collectd.conf %{buildroot}%{_sysconfdir}/collectd.conf
 %{__install} -Dp -m0644 %{SOURCE2} %{buildroot}%{_unitdir}/collectd.service
 %{__install} -d -m0755 %{buildroot}%{_localstatedir}/lib/collectd/rrd
-%{__install} -d -m0755 %{buildroot}/%{_datadir}/collectd/collection3/
-%{__install} -d -m0755 %{buildroot}/%{_sysconfdir}/httpd/conf.d/
+%{__install} -d -m0755 %{buildroot}%{_datadir}/collectd/collection3/
+%{__install} -d -m0755 %{buildroot}%{_sysconfdir}/httpd/conf.d/
 
 find contrib/ -type f -exec %{__chmod} a-x {} \;
 
@@ -458,10 +458,11 @@ find %{buildroot} -name .packlist -exec rm {} \;
 find %{buildroot} -name perllocal.pod -exec rm {} \;
 
 # copy web interface
-cp -ad contrib/collection3/* %{buildroot}/%{_datadir}/collectd/collection3/
+cp -ad contrib/collection3/* %{buildroot}%{_datadir}/collectd/collection3/
 cp -pv %{buildroot}%{_datadir}/collectd/collection3/etc/collection.conf %{buildroot}%{_sysconfdir}/collection.conf
-cp %{SOURCE1} %{buildroot}/%{_sysconfdir}/httpd/conf.d/collectd.conf
-chmod +x %{buildroot}/%{_datadir}/collectd/collection3/bin/*.cgi
+ln -rsf %{_sysconfdir}/collection.conf %{buildroot}%{_datadir}/collectd/collection3/etc/collection.conf
+cp -pv %{SOURCE1} %{buildroot}%{_sysconfdir}/httpd/conf.d/collectd.conf
+chmod +x %{buildroot}%{_datadir}/collectd/collection3/bin/*.cgi
 
 # Move the Perl examples to a separate directory.
 mkdir perl-examples
@@ -813,6 +814,10 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Sat Jun 07 2014 Ruben Kerkhof <ruben@rubenkerkhof.com> - 5.4.1-5
+- Fix 404 while loading stylesheet in collection3
+- Restore symlink to /etc/collection.conf
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 5.4.1-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
