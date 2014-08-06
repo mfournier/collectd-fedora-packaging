@@ -4,7 +4,7 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.4.1
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -19,6 +19,7 @@ Source94: nginx.conf
 Source95: sensors.conf
 Source96: snmp.conf
 Source97: rrdtool.conf
+Source98: onewire.conf
 
 Patch0: %{name}-include-collectd.d.patch
 Patch1: %{name}-fix-colors-in-collection.conf.patch
@@ -265,6 +266,13 @@ BuildRequires: libesmtp-devel
 This plugin uses the ESMTP library to send
 notifications to a configured email address.
 
+%package onewire
+Summary:	OneWire bus plugin for collectd
+Requires:	collectd = %{version}-%{release}, owfs-server, owfs-capi
+BuildRequires:	owfs-devel
+%description onewire
+The experimental OneWire plugin collects temperature information
+from sensors connected to the computer over the OneWire bus.
 
 %ifnarch s390 s390x
 %package nut
@@ -404,6 +412,9 @@ It graphs the bit-rate and sampling rate as you play songs.
 
 sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in src/libcollectdclient/Makefile.in
 
+# recompile generated files
+touch src/riemann.proto src/pinba.proto
+
 
 %build
 %configure CFLAGS="%{optflags} -DLT_LAZY_OR_NOW='RTLD_LAZY|RTLD_GLOBAL'" \
@@ -417,7 +428,6 @@ sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in src/libcollectdclient/Ma
 %ifarch s390 s390x
     --disable-nut \
 %endif
-    --disable-onewire \
     --disable-oracle \
     --disable-pf \
     --disable-redis \
@@ -477,6 +487,7 @@ cp %{SOURCE94} %{buildroot}%{_sysconfdir}/collectd.d/nginx.conf
 cp %{SOURCE95} %{buildroot}%{_sysconfdir}/collectd.d/sensors.conf
 cp %{SOURCE96} %{buildroot}%{_sysconfdir}/collectd.d/snmp.conf
 cp %{SOURCE97} %{buildroot}%{_sysconfdir}/collectd.d/rrdtool.conf
+cp %{SOURCE98} %{buildroot}%{_sysconfdir}/collectd.d/onewire.conf
 
 # configs for subpackaged plugins
 %ifnarch s390 s390x
@@ -737,6 +748,9 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %files notify_email
 %{_libdir}/collectd/notify_email.so
 
+%files onewire
+%{_libdir}/collectd/onewire.so
+%config(noreplace) %{_sysconfdir}/collectd.d/onewire.conf
 
 %ifnarch s390 s390x
 %files nut
@@ -814,6 +828,10 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Wed Jul 23 2014 Ruben Kerkhof <ruben@rubenkerkhof.com> - 5.4.1-6
+- Enable onewire plugin (patch from Tomasz Torcz)
+- Rebuild for new protobuf-c (#1126752)
+
 * Sat Jun 07 2014 Ruben Kerkhof <ruben@rubenkerkhof.com> - 5.4.1-5
 - Fix 404 while loading stylesheet in collection3
 - Restore symlink to /etc/collection.conf
