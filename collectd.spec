@@ -4,7 +4,7 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.4.1
-Release: 10%{?dist}
+Release: 11%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -24,11 +24,13 @@ Source98: onewire.conf
 Patch0: %{name}-include-collectd.d.patch
 Patch1: %{name}-fix-colors-in-collection.conf.patch
 Patch2: %{name}-lvm-do-not-segfault-when-there-are-no-vgs.patch
+Patch3: %{name}-support-varnish-4.patch
 
 BuildRequires: perl(ExtUtils::MakeMaker)
 BuildRequires: perl(ExtUtils::Embed)
 BuildRequires: python-devel
 BuildRequires: libgcrypt-devel
+BuildRequires: autoconf automake libtool libtool-ltdl-devel
 Requires(post):   systemd
 Requires(preun):  systemd
 Requires(postun): systemd
@@ -294,6 +296,15 @@ Requires: perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 This package contains the Perl bindings and plugin for collectd.
 
 
+%package varnish
+Summary:       Varnish plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: varnish-libs-devel
+%description varnish
+This plugin collects information about Varnish, an HTTP accelerator.
+
+
 %package pinba
 Summary:       Pinba plugin for collectd
 Group:         System Environment/Daemons
@@ -409,14 +420,16 @@ It graphs the bit-rate and sampling rate as you play songs.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
-sed -i.orig -e 's|-Werror||g' Makefile.in */Makefile.in src/libcollectdclient/Makefile.in
+sed -i.orig -e 's|-Werror||g' Makefile.am */Makefile.am src/libcollectdclient/Makefile.am
 
 # recompile generated files
 touch src/riemann.proto src/pinba.proto
 
 
 %build
+autoreconf -vif
 %configure CFLAGS="%{optflags} -DLT_LAZY_OR_NOW='RTLD_LAZY|RTLD_GLOBAL'" \
     --enable-all-plugins \
     --disable-static \
@@ -438,7 +451,6 @@ touch src/riemann.proto src/pinba.proto
     --disable-sigrok \
     --disable-tape \
     --disable-tokyotyrant \
-    --disable-varnish \
     --disable-write_mongodb \
     --disable-write_redis \
     --disable-zfs_arc \
@@ -806,6 +818,9 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %doc %{_mandir}/man5/collectd-snmp.5*
 
 
+%files varnish
+%{_libdir}/collectd/varnish.so
+
 %ifnarch ppc ppc64 sparc sparc64
 %files virt
 %{_libdir}/collectd/libvirt.so
@@ -828,6 +843,9 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Thu Nov 06 2014 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.1-11
+- Fix building with varnish 4
+
 * Thu Oct 16 2014 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.1-10
 - Rebuilt for new OneWire version
 
