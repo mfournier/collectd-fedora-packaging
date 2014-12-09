@@ -8,8 +8,6 @@ EnvironmentFile=-/etc/sysconfig/collectd
 ExecStart=/usr/sbin/collectd -C /etc/collectd.conf -f
 Restart=always
 RestartSec=10
-StandardOutput=syslog
-StandardError=syslog
 
 [Install]
 WantedBy=multi-user.target
