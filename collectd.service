@@ -4,7 +4,6 @@ After=local-fs.target network-online.target
 Requires=local-fs.target network-online.target
 
 [Service]
-EnvironmentFile=-/etc/sysconfig/collectd
 ExecStart=/usr/sbin/collectd -C /etc/collectd.conf -f
 Restart=on-failure
 
