@@ -1,7 +1,7 @@
 [Unit]
 Description=Collectd
-After=local-fs.target network.target
-Requires=local-fs.target network.target
+After=local-fs.target network-online.target
+Requires=local-fs.target network-online.target
 
 [Service]
 EnvironmentFile=-/etc/sysconfig/collectd
