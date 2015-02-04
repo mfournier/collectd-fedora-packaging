@@ -4,7 +4,7 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.4.1
-Release: 12%{?dist}
+Release: 13%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -544,6 +544,7 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %ifnarch s390 s390x
 %exclude %{_sysconfdir}/collectd.d/nut.conf
 %endif
+%exclude %{_sysconfdir}/collectd.d/onewire.conf
 %exclude %{_sysconfdir}/collectd.d/perl.conf
 %exclude %{_sysconfdir}/collectd.d/ping.conf
 %exclude %{_sysconfdir}/collectd.d/postgresql.conf
@@ -843,6 +844,9 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Wed Feb 04 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.1-13
+- Exclude onewire.conf from main collectd package
+
 * Tue Dec 09 2014 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.1-12
 - Improve the systemd unit a bit
 
