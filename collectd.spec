@@ -4,7 +4,7 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.4.1
-Release: 13%{?dist}
+Release: 14%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -844,6 +844,9 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Tue Feb 10 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.1-14
+- Rebuilt for new OneWire version
+
 * Wed Feb 04 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.1-13
 - Exclude onewire.conf from main collectd package
 
