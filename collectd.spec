@@ -4,7 +4,7 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.4.1
-Release: 14%{?dist}
+Release: 15%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -271,7 +271,7 @@ notifications to a configured email address.
 %package onewire
 Summary:	OneWire bus plugin for collectd
 Requires:	collectd = %{version}-%{release}, owfs-server, owfs-capi
-BuildRequires:	owfs-devel
+BuildRequires:	owfs-devel owfs-capi
 %description onewire
 The experimental OneWire plugin collects temperature information
 from sensors connected to the computer over the OneWire bus.
@@ -844,6 +844,9 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Tue Feb 10 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.1-15
+- OneWire libraries are in owfs-capi package
+
 * Tue Feb 10 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.1-14
 - Rebuilt for new OneWire version
 
