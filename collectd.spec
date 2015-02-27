@@ -3,8 +3,8 @@
 
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
-Version: 5.4.1
-Release: 15%{?dist}
+Version: 5.4.2
+Release: 1%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -22,9 +22,7 @@ Source97: rrdtool.conf
 Source98: onewire.conf
 
 Patch0: %{name}-include-collectd.d.patch
-Patch1: %{name}-fix-colors-in-collection.conf.patch
-Patch2: %{name}-lvm-do-not-segfault-when-there-are-no-vgs.patch
-Patch3: %{name}-support-varnish-4.patch
+Patch1: %{name}-support-varnish-4.patch
 
 BuildRequires: perl(ExtUtils::MakeMaker)
 BuildRequires: perl(ExtUtils::Embed)
@@ -271,7 +269,7 @@ notifications to a configured email address.
 %package onewire
 Summary:	OneWire bus plugin for collectd
 Requires:	collectd = %{version}-%{release}, owfs-server, owfs-capi
-BuildRequires:	owfs-devel owfs-capi
+BuildRequires:	owfs-devel
 %description onewire
 The experimental OneWire plugin collects temperature information
 from sensors connected to the computer over the OneWire bus.
@@ -419,8 +417,6 @@ It graphs the bit-rate and sampling rate as you play songs.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 sed -i.orig -e 's|-Werror||g' Makefile.am */Makefile.am src/libcollectdclient/Makefile.am
 
@@ -844,6 +840,12 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Fri Feb 27 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.2-1
+- Upstream released new version
+- Drop BuildRequires on owfs-capi, fixed in owfs
+- Drop collectd-fix-colors-in-collection.conf.patch, fixed upstream
+- Drop collectd-lvm-do-not-segfault-when-there-are-no-vgs.patch, fixed upstream
+
 * Tue Feb 10 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.1-15
 - OneWire libraries are in owfs-capi package
 
