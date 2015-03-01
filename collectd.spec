@@ -757,9 +757,11 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %files notify_email
 %{_libdir}/collectd/notify_email.so
 
+
 %files onewire
 %{_libdir}/collectd/onewire.so
 %config(noreplace) %{_sysconfdir}/collectd.d/onewire.conf
+
 
 %ifnarch s390 s390x
 %files nut
@@ -817,6 +819,7 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 %files varnish
 %{_libdir}/collectd/varnish.so
+
 
 %ifnarch ppc ppc64 sparc sparc64
 %files virt
