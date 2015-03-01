@@ -4,7 +4,7 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.4.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -426,7 +426,7 @@ touch src/riemann.proto src/pinba.proto
 
 %build
 autoreconf -vif
-%configure CFLAGS="%{optflags} -DLT_LAZY_OR_NOW='RTLD_LAZY|RTLD_GLOBAL'" \
+%configure \
     --enable-all-plugins \
     --disable-static \
     --disable-apple_sensors \
@@ -843,6 +843,10 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Sun Mar 01 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.2-2
+- Remove workaround for perl / python module loading
+  This was fixed by upstream commit f131f0347f58 in 2009
+
 * Fri Feb 27 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.2-1
 - Upstream released new version
 - Drop BuildRequires on owfs-capi, fixed in owfs
