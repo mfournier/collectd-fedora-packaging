@@ -4,7 +4,7 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.4.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -23,6 +23,8 @@ Source98: onewire.conf
 
 Patch0: %{name}-include-collectd.d.patch
 Patch1: %{name}-support-varnish-4.patch
+# https://github.com/collectd/collectd/pull/1008
+Patch2: %{name}-librabbitmq.patch
 
 BuildRequires: perl(ExtUtils::MakeMaker)
 BuildRequires: perl(ExtUtils::Embed)
@@ -417,6 +419,7 @@ It graphs the bit-rate and sampling rate as you play songs.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 sed -i.orig -e 's|-Werror||g' Makefile.am */Makefile.am src/libcollectdclient/Makefile.am
 
@@ -843,6 +846,9 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Tue Apr 21 2015 Remi Collet <remi@fedoraproject.org> 5.4.2-4
+- rebuild for new librabbitmq
+
 * Sun Apr 12 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.4.2-3
 - Rebuilt for new Ganglia version
 
