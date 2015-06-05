@@ -4,7 +4,7 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.4.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -846,6 +846,9 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Fri Jun 05 2015 Jitka Plesnikova <jplesnik@redhat.com> - 5.4.2-5
+- Perl 5.22 rebuild
+
 * Tue Apr 21 2015 Remi Collet <remi@fedoraproject.org> 5.4.2-4
 - rebuild for new librabbitmq
 
