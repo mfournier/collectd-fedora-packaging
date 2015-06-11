@@ -3,8 +3,8 @@
 
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
-Version: 5.4.2
-Release: 5%{?dist}
+Version: 5.5.0
+Release: 1%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -22,17 +22,14 @@ Source97: rrdtool.conf
 Source98: onewire.conf
 
 Patch0: %{name}-include-collectd.d.patch
-Patch1: %{name}-support-varnish-4.patch
-# https://github.com/collectd/collectd/pull/1008
-Patch2: %{name}-librabbitmq.patch
 
 BuildRequires: perl(ExtUtils::MakeMaker)
 BuildRequires: perl(ExtUtils::Embed)
 BuildRequires: python-devel
 BuildRequires: libgcrypt-devel
-BuildRequires: autoconf automake libtool libtool-ltdl-devel
-Requires(post):   systemd
-Requires(preun):  systemd
+BuildRequires: libtool-ltdl-devel
+Requires(post): systemd
+Requires(preun): systemd
 Requires(postun): systemd
 
 %description
@@ -82,6 +79,15 @@ BuildRequires: libxml2-devel
 This plugin retrieves statistics from the BIND dns server.
 
 
+%package ceph
+Summary:       Ceph plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: yajl-devel
+%description ceph
+This plugin collectd data from Ceph
+
+
 %package curl
 Summary:       Curl plugin for collectd
 Group:         System Environment/Daemons
@@ -119,6 +125,14 @@ BuildRequires: libdbi-devel
 %description dbi
 This plugin uses the dbi library to connect to various databases,
 execute SQL statements and read back the results.
+
+
+%package drbd
+Summary:       DRBD plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+%description drbd
+This plugin collects data from DRBD.
 
 
 %package dns
@@ -287,6 +301,16 @@ This plugin for collectd provides Network UPS Tools support.
 %endif
 
 
+%package openldap
+Summary:       OpenLDAP plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: openldap-devel
+%description openldap
+This plugin for collectd reads monitoring information
+from OpenLDAP's cn=Monitor subtree.
+
+
 %package -n perl-Collectd
 Summary:       Perl bindings for collectd
 Group:         System Environment/Daemons
@@ -364,6 +388,17 @@ This plugin for collectd provides querying of sensors supported by
 lm_sensors.
 %endif
 
+
+%package smart
+Summary:       SMART plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: libatasmart-devel
+%description smart
+This plugin for collectd collects SMART statistics,
+notably load cycle count, temperature and bad sectors.
+
+
 %package snmp
 Summary:       SNMP module for collectd
 Group:         System Environment/Daemons
@@ -371,6 +406,16 @@ Requires:      collectd = %{version}-%{release}, net-snmp
 BuildRequires: net-snmp-devel
 %description snmp
 This plugin for collectd provides querying of net-snmp.
+
+
+%package turbostat
+Summary:       Turbostat module for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}, net-snmp
+BuildRequires: libcap-devel
+%description turbostat
+This plugin for collectd reads CPU frequency and C-state residency
+on modern Intel turbo-capable processors.
 
 
 %ifnarch ppc ppc64 sparc sparc64
@@ -396,6 +441,15 @@ This package will allow for a simple web interface to view rrd files created by
 collectd.
 
 
+%package write_redis
+Summary:       Redis output plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: hiredis-devel
+%description write_redis
+This plugin can send data to Redis.
+
+
 %package write_riemann
 Summary:       Riemann output plugin for collectd
 Group:         System Environment/Daemons
@@ -403,6 +457,22 @@ Requires:      collectd = %{version}-%{release}
 BuildRequires: protobuf-c-devel
 %description write_riemann
 This plugin can send data to Riemann.
+
+
+%package write_sensu
+Summary:       Sensu output plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+%description write_sensu
+This plugin can send data to Sensu.
+
+
+%package write_tsdb
+Summary:       OpenTSDB output plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+%description write_tsdb
+This plugin can send data to OpenTSDB.
 
 
 %package xmms
@@ -415,25 +485,30 @@ This is a collectd plugin for the XMMS music player.
 It graphs the bit-rate and sampling rate as you play songs.
 
 
+%package zookeeper
+Summary:       Zookeeper plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+%description zookeeper
+This is a collectd plugin that reads data from Zookeeper's MNTR command.
+
+
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
-
-sed -i.orig -e 's|-Werror||g' Makefile.am */Makefile.am src/libcollectdclient/Makefile.am
 
 # recompile generated files
 touch src/riemann.proto src/pinba.proto
 
 
 %build
-autoreconf -vif
 %configure \
+    --without-included-ltdl \
     --enable-all-plugins \
     --disable-static \
     --disable-apple_sensors \
     --disable-aquaero \
+    --disable-barometer \
     --disable-lpar \
     --disable-mic \
     --disable-netapp \
@@ -450,8 +525,8 @@ autoreconf -vif
     --disable-sigrok \
     --disable-tape \
     --disable-tokyotyrant \
+    --disable-write_kafka \
     --disable-write_mongodb \
-    --disable-write_redis \
     --disable-zfs_arc \
     --with-libiptc \
     --with-java=%{java_home}/ \
@@ -516,6 +591,10 @@ done
 rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
+%check
+%{__make} check
+
+
 %post
 /sbin/ldconfig
 %systemd_post collectd.service
@@ -576,13 +655,16 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %{_libdir}/collectd/entropy.so
 %{_libdir}/collectd/ethstat.so
 %{_libdir}/collectd/exec.so
+%{_libdir}/collectd/fhcount.so
 %{_libdir}/collectd/filecount.so
 %{_libdir}/collectd/fscache.so
 %{_libdir}/collectd/hddtemp.so
 %{_libdir}/collectd/interface.so
+%{_libdir}/collectd/ipc.so
 %{_libdir}/collectd/irq.so
 %{_libdir}/collectd/load.so
 %{_libdir}/collectd/logfile.so
+%{_libdir}/collectd/log_logstash.so
 %{_libdir}/collectd/madwifi.so
 %{_libdir}/collectd/match_empty_counter.so
 %{_libdir}/collectd/match_hashed.so
@@ -630,6 +712,7 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %{_libdir}/collectd/wireless.so
 %{_libdir}/collectd/write_graphite.so
 %{_libdir}/collectd/write_http.so
+%{_libdir}/collectd/write_log.so
 
 %{_datadir}/collectd/types.db
 
@@ -673,6 +756,10 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %{_libdir}/collectd/bind.so
 
 
+%files ceph
+%{_libdir}/collectd/ceph.so
+
+
 %files curl
 %{_libdir}/collectd/curl.so
 
@@ -687,6 +774,10 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 %files dbi
 %{_libdir}/collectd/dbi.so
+
+
+%files drbd
+%{_libdir}/collectd/drbd.so
 
 
 %files dns
@@ -761,16 +852,20 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %{_libdir}/collectd/notify_email.so
 
 
-%files onewire
-%{_libdir}/collectd/onewire.so
-%config(noreplace) %{_sysconfdir}/collectd.d/onewire.conf
-
-
 %ifnarch s390 s390x
 %files nut
 %{_libdir}/collectd/nut.so
 %config(noreplace) %{_sysconfdir}/collectd.d/nut.conf
 %endif
+
+
+%files onewire
+%{_libdir}/collectd/onewire.so
+%config(noreplace) %{_sysconfdir}/collectd.d/onewire.conf
+
+
+%files openldap
+%{_libdir}/collectd/openldap.so
 
 
 %files -n perl-Collectd
@@ -814,10 +909,18 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %endif
 
 
+%files smart
+%{_libdir}/collectd/smart.so
+
+
 %files snmp
 %{_libdir}/collectd/snmp.so
 %config(noreplace) %{_sysconfdir}/collectd.d/snmp.conf
 %doc %{_mandir}/man5/collectd-snmp.5*
+
+
+%files turbostat
+%{_libdir}/collectd/turbostat.so
 
 
 %files varnish
@@ -826,7 +929,7 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 %ifnarch ppc ppc64 sparc sparc64
 %files virt
-%{_libdir}/collectd/libvirt.so
+%{_libdir}/collectd/virt.so
 %config(noreplace) %{_sysconfdir}/collectd.d/libvirt.conf
 %endif
 
@@ -837,15 +940,35 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %config(noreplace) %{_sysconfdir}/collection.conf
 
 
+%files write_redis
+%{_libdir}/collectd/write_redis.so
+
+
 %files write_riemann
 %{_libdir}/collectd/write_riemann.so
+
+
+%files write_sensu
+%{_libdir}/collectd/write_sensu.so
+
+
+%files write_tsdb
+%{_libdir}/collectd/write_tsdb.so
 
 
 %files xmms
 %{_libdir}/collectd/xmms.so
 
 
+%files zookeeper
+%{_libdir}/collectd/zookeeper.so
+
+
 %changelog
+* Fri Jun 05 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.5.0-1
+- Upstream released new version
+- New plugins for Ceph, DRBD, SMART, turbostat, Redis and more
+
 * Fri Jun 05 2015 Jitka Plesnikova <jplesnik@redhat.com> - 5.4.2-5
 - Perl 5.22 rebuild
 
