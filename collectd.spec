@@ -408,6 +408,7 @@ BuildRequires: net-snmp-devel
 This plugin for collectd provides querying of net-snmp.
 
 
+%ifarch %ix86 x86_64
 %package turbostat
 Summary:       Turbostat module for collectd
 Group:         System Environment/Daemons
@@ -416,6 +417,7 @@ BuildRequires: libcap-devel
 %description turbostat
 This plugin for collectd reads CPU frequency and C-state residency
 on modern Intel turbo-capable processors.
+%endif
 
 
 %ifnarch ppc ppc64 sparc sparc64
@@ -525,6 +527,9 @@ touch src/riemann.proto src/pinba.proto
     --disable-sigrok \
     --disable-tape \
     --disable-tokyotyrant \
+%ifnarch %ix86 x86_64
+    --disable-turbostat \
+%endif
     --disable-write_kafka \
     --disable-write_mongodb \
     --disable-zfs_arc \
@@ -919,8 +924,10 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %doc %{_mandir}/man5/collectd-snmp.5*
 
 
+%ifarch %ix86 x86_64
 %files turbostat
 %{_libdir}/collectd/turbostat.so
+%endif
 
 
 %files varnish
