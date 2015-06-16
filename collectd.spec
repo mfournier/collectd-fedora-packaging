@@ -505,6 +505,8 @@ touch src/riemann.proto src/pinba.proto
 
 %build
 %configure \
+    --disable-dependency-tracking \
+    --disable-silent-rules \
     --without-included-ltdl \
     --enable-all-plugins \
     --disable-static \
