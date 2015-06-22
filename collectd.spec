@@ -127,14 +127,6 @@ This plugin uses the dbi library to connect to various databases,
 execute SQL statements and read back the results.
 
 
-%package drbd
-Summary:       DRBD plugin for collectd
-Group:         System Environment/Daemons
-Requires:      collectd = %{version}-%{release}
-%description drbd
-This plugin collects data from DRBD.
-
-
 %package dns
 Summary:       DNS traffic analysis plugin for collectd
 Group:         System Environment/Daemons
@@ -142,6 +134,14 @@ Requires:      collectd = %{version}-%{release}
 BuildRequires: libpcap-devel
 %description dns
 This plugin collects DNS traffic data.
+
+
+%package drbd
+Summary:       DRBD plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+%description drbd
+This plugin collects data from DRBD.
 
 
 %package email
@@ -283,15 +283,6 @@ This plugin uses the ESMTP library to send
 notifications to a configured email address.
 
 
-%package onewire
-Summary:	OneWire bus plugin for collectd
-Requires:	collectd = %{version}-%{release}, owfs-server, owfs-capi
-BuildRequires:	owfs-devel
-%description onewire
-The experimental OneWire plugin collects temperature information
-from sensors connected to the computer over the OneWire bus.
-
-
 %ifnarch s390 s390x
 %package nut
 Summary:       Network UPS Tools plugin for collectd
@@ -301,6 +292,15 @@ BuildRequires: nut-devel
 %description nut
 This plugin for collectd provides Network UPS Tools support.
 %endif
+
+
+%package onewire
+Summary:	OneWire bus plugin for collectd
+Requires:	collectd = %{version}-%{release}, owfs-server, owfs-capi
+BuildRequires:	owfs-devel
+%description onewire
+The experimental OneWire plugin collects temperature information
+from sensors connected to the computer over the OneWire bus.
 
 
 %package openldap
@@ -320,15 +320,6 @@ Requires:      collectd = %{version}-%{release}
 Requires: perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 %description -n perl-Collectd
 This package contains the Perl bindings and plugin for collectd.
-
-
-%package varnish
-Summary:       Varnish plugin for collectd
-Group:         System Environment/Daemons
-Requires:      collectd = %{version}-%{release}
-BuildRequires: varnish-libs-devel
-%description varnish
-This plugin collects information about Varnish, an HTTP accelerator.
 
 
 %package pinba
@@ -430,6 +421,15 @@ BuildRequires: libcap-devel
 This plugin for collectd reads CPU frequency and C-state residency
 on modern Intel turbo-capable processors.
 %endif
+
+
+%package varnish
+Summary:       Varnish plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: varnish-libs-devel
+%description varnish
+This plugin collects information about Varnish, an HTTP accelerator.
 
 
 %ifnarch ppc ppc64 sparc sparc64
@@ -681,8 +681,8 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %{_libdir}/collectd/ipc.so
 %{_libdir}/collectd/irq.so
 %{_libdir}/collectd/load.so
-%{_libdir}/collectd/logfile.so
 %{_libdir}/collectd/log_logstash.so
+%{_libdir}/collectd/logfile.so
 %{_libdir}/collectd/madwifi.so
 %{_libdir}/collectd/match_empty_counter.so
 %{_libdir}/collectd/match_hashed.so
