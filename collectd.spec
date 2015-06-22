@@ -27,7 +27,6 @@ BuildRequires: perl(ExtUtils::MakeMaker)
 BuildRequires: perl(ExtUtils::Embed)
 BuildRequires: python-devel
 BuildRequires: libgcrypt-devel
-BuildRequires: libtool-ltdl-devel
 Requires(post):   systemd
 Requires(preun):  systemd
 Requires(postun): systemd
@@ -469,6 +468,7 @@ Summary:       Riemann output plugin for collectd
 Group:         System Environment/Daemons
 Requires:      collectd = %{version}-%{release}
 BuildRequires: protobuf-c-devel
+BuildRequires: libtool-ltdl-devel
 %description write_riemann
 This plugin can send data to Riemann.
 
