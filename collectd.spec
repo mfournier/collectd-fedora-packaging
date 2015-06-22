@@ -4,7 +4,7 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.5.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -28,8 +28,8 @@ BuildRequires: perl(ExtUtils::Embed)
 BuildRequires: python-devel
 BuildRequires: libgcrypt-devel
 BuildRequires: libtool-ltdl-devel
-Requires(post): systemd
-Requires(preun): systemd
+Requires(post):   systemd
+Requires(preun):  systemd
 Requires(postun): systemd
 
 %description
@@ -282,6 +282,7 @@ BuildRequires: libesmtp-devel
 This plugin uses the ESMTP library to send
 notifications to a configured email address.
 
+
 %package onewire
 Summary:	OneWire bus plugin for collectd
 Requires:	collectd = %{version}-%{release}, owfs-server, owfs-capi
@@ -289,6 +290,7 @@ BuildRequires:	owfs-devel
 %description onewire
 The experimental OneWire plugin collects temperature information
 from sensors connected to the computer over the OneWire bus.
+
 
 %ifnarch s390 s390x
 %package nut
@@ -356,6 +358,16 @@ BuildRequires: postgresql-devel
 %description postgresql
 PostgreSQL querying plugin. This plugins provides data of issued commands,
 called handlers and database traffic.
+
+
+%package redis
+Summary:       Redis plugin for collectd
+Group:         System Environment/Daemons
+Requires:      collectd = %{version}-%{release}
+BuildRequires: hiredis-devel
+%description redis
+The Redis plugin connects to one or more instances of Redis, a key-value store,
+and collects usage information using the hiredis library.
 
 
 %package rrdcached
@@ -521,7 +533,6 @@ touch src/riemann.proto src/pinba.proto
 %endif
     --disable-oracle \
     --disable-pf \
-    --disable-redis \
     --disable-routeros \
 %ifarch ppc ppc64 sparc sparc64
     --disable-sensors \
@@ -783,13 +794,13 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %{_libdir}/collectd/dbi.so
 
 
-%files drbd
-%{_libdir}/collectd/drbd.so
-
-
 %files dns
 %{_libdir}/collectd/dns.so
 %config(noreplace) %{_sysconfdir}/collectd.d/dns.conf
+
+
+%files drbd
+%{_libdir}/collectd/drbd.so
 
 
 %files email
@@ -900,6 +911,10 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %{_datadir}/collectd/postgresql_default.conf
 
 
+%files redis
+%{_libdir}/collectd/redis.so
+
+
 %files rrdcached
 %{_libdir}/collectd/rrdcached.so
 
@@ -974,6 +989,11 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Mon Jun 22 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.5.0-4
+- Enable Redis plugin
+- Reduce diff with EPEL spec
+- Remove unused collection.conf
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 5.5.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
