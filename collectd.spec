@@ -4,7 +4,7 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.5.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -414,7 +414,7 @@ This plugin for collectd provides querying of net-snmp.
 %package turbostat
 Summary:       Turbostat module for collectd
 Group:         System Environment/Daemons
-Requires:      collectd = %{version}-%{release}, net-snmp
+Requires:      collectd = %{version}-%{release}
 BuildRequires: libcap-devel
 %description turbostat
 This plugin for collectd reads CPU frequency and C-state residency
@@ -989,6 +989,9 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Sun Jul 05 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.5.0-5
+- Turbostat plugin doesn't need net-snmp
+
 * Mon Jun 22 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.5.0-4
 - Enable Redis plugin
 - Reduce diff with EPEL spec
