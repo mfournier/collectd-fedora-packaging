@@ -4,7 +4,7 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.5.0
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -176,15 +176,6 @@ Requires:      collectd = %{version}-%{release}
 BuildRequires: OpenIPMI-devel
 %description ipmi
 This plugin for collectd provides IPMI support.
-
-
-%package iptables
-Summary:       Iptables plugin for collectd
-Group:         System Environment/Daemons
-Requires:      collectd = %{version}-%{release}
-BuildRequires: iptables-devel
-%description iptables
-This plugin collects data from iptables counters.
 
 
 %package ipvs
@@ -525,6 +516,7 @@ touch src/riemann.proto src/pinba.proto
     --disable-apple_sensors \
     --disable-aquaero \
     --disable-barometer \
+    --disable-iptables \
     --disable-lpar \
     --disable-mic \
     --disable-netapp \
@@ -822,10 +814,6 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %config(noreplace) %{_sysconfdir}/collectd.d/ipmi.conf
 
 
-%files iptables
-%{_libdir}/collectd/iptables.so
-
-
 %files ipvs
 %{_libdir}/collectd/ipvs.so
 
@@ -989,6 +977,9 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Sun Jul 05 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.5.0-6
+- Disable iptables plugin, libiptc is broken (#1239213)
+
 * Sun Jul 05 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.5.0-5
 - Turbostat plugin doesn't need net-snmp
 
