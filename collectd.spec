@@ -4,7 +4,7 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.5.0
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -541,7 +541,8 @@ touch src/riemann.proto src/pinba.proto
     --with-libiptc \
     --with-java=%{java_home}/ \
     --with-python \
-    --with-perl-bindings=INSTALLDIRS=vendor
+    --with-perl-bindings=INSTALLDIRS=vendor \
+    AR_FLAGS="-cr"
 
 %{__make} %{?_smp_mflags}
 
@@ -977,6 +978,10 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Sat Jul 25 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.5.0-7
+- Silence build noise by setting AR_FLAGS:
+  ar: `u' modifier ignored since `D' is the default (see `U')
+
 * Sun Jul 05 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.5.0-6
 - Disable iptables plugin, libiptc is broken (#1239213)
 
