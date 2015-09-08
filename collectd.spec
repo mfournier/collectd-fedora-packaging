@@ -1,10 +1,9 @@
-%global _hardened_build 1
 %global __provides_exclude_from ^%{_libdir}/collectd/.*\\.so$
 
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.5.0
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -978,6 +977,10 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Tue Sep 08 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.5.0-8
+- Rebuild for hiredis soname bump
+- Drop hardened_build macro, it's the default now
+
 * Sat Jul 25 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.5.0-7
 - Silence build noise by setting AR_FLAGS:
   ar: `u' modifier ignored since `D' is the default (see `U')
