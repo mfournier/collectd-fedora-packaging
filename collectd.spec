@@ -3,7 +3,7 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.5.0
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -369,7 +369,7 @@ BuildRequires: rrdtool-devel
 This plugin for collectd provides rrdtool support.
 
 
-%ifnarch ppc ppc64 sparc sparc64
+%ifnarch ppc sparc sparc64
 %package sensors
 Summary:       Libsensors module for collectd
 Group:         System Environment/Daemons
@@ -421,7 +421,7 @@ BuildRequires: varnish-libs-devel
 This plugin collects information about Varnish, an HTTP accelerator.
 
 
-%ifnarch ppc ppc64 sparc sparc64
+%ifnarch ppc sparc sparc64
 %package virt
 Summary:       Libvirt plugin for collectd
 Group:         System Environment/Daemons
@@ -525,7 +525,7 @@ touch src/riemann.proto src/pinba.proto
     --disable-oracle \
     --disable-pf \
     --disable-routeros \
-%ifarch ppc ppc64 sparc sparc64
+%ifarch ppc sparc sparc64
     --disable-sensors \
 %endif
     --disable-sigrok \
@@ -543,25 +543,25 @@ touch src/riemann.proto src/pinba.proto
     --with-perl-bindings=INSTALLDIRS=vendor \
     AR_FLAGS="-cr"
 
-%{__make} %{?_smp_mflags}
+make %{?_smp_mflags}
 
 
 %install
-%{__rm} -rf contrib/SpamAssassin
-%{__make} install DESTDIR="%{buildroot}"
+rm -rf contrib/SpamAssassin
+make install DESTDIR="%{buildroot}"
 
-%{__install} -Dp -m0644 src/collectd.conf %{buildroot}%{_sysconfdir}/collectd.conf
-%{__install} -Dp -m0644 %{SOURCE2} %{buildroot}%{_unitdir}/collectd.service
-%{__install} -d -m0755 %{buildroot}%{_localstatedir}/lib/collectd/rrd
-%{__install} -d -m0755 %{buildroot}%{_datadir}/collectd/collection3/
-%{__install} -d -m0755 %{buildroot}%{_sysconfdir}/httpd/conf.d/
+install -Dp -m0644 src/collectd.conf %{buildroot}%{_sysconfdir}/collectd.conf
+install -Dp -m0644 %{SOURCE2} %{buildroot}%{_unitdir}/collectd.service
+install -d -m0755 %{buildroot}%{_localstatedir}/lib/collectd/rrd
+install -d -m0755 %{buildroot}%{_datadir}/collectd/collection3/
+install -d -m0755 %{buildroot}%{_sysconfdir}/httpd/conf.d/
 
-find contrib/ -type f -exec %{__chmod} a-x {} \;
+find contrib/ -type f -exec chmod a-x {} \;
 
 # Remove Perl hidden .packlist files.
-find %{buildroot} -name .packlist -exec rm {} \;
+find %{buildroot} -name .packlist -delete
 # Remove Perl temporary file perllocal.pod
-find %{buildroot} -name perllocal.pod -exec rm {} \;
+find %{buildroot} -name perllocal.pod -delete
 
 # copy web interface
 cp -ad contrib/collection3/* %{buildroot}%{_datadir}/collectd/collection3/
@@ -592,7 +592,7 @@ for p in dns ipmi libvirt nut perl ping postgresql
 for p in dns ipmi libvirt perl ping postgresql
 %endif
 do
-%{__cat} > %{buildroot}%{_sysconfdir}/collectd.d/$p.conf <<EOF
+cat > %{buildroot}%{_sysconfdir}/collectd.d/$p.conf <<EOF
 LoadPlugin $p
 EOF
 done
@@ -602,7 +602,7 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %check
-%{__make} check
+make check
 
 
 %post
@@ -620,6 +620,9 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %files
+%{!?_licensedir:%global license %%doc}
+%license COPYING
+%doc AUTHORS ChangeLog README
 %config(noreplace) %{_sysconfdir}/collectd.conf
 %config(noreplace) %{_sysconfdir}/collectd.d/
 %exclude %{_sysconfdir}/collectd.d/apache.conf
@@ -736,7 +739,6 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %{_includedir}/collectd/network.h
 %{_includedir}/collectd/network_buffer.h
 
-%doc AUTHORS ChangeLog COPYING README
 %doc %{_mandir}/man1/collectd.1*
 %doc %{_mandir}/man1/collectdctl.1*
 %doc %{_mandir}/man1/collectd-nagios.1*
@@ -912,7 +914,7 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %config(noreplace) %{_sysconfdir}/collectd.d/rrdtool.conf
 
 
-%ifnarch ppc ppc64 sparc sparc64
+%ifnarch ppc sparc sparc64
 %files sensors
 %{_libdir}/collectd/sensors.so
 %config(noreplace) %{_sysconfdir}/collectd.d/sensors.conf
@@ -939,7 +941,7 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 %{_libdir}/collectd/varnish.so
 
 
-%ifnarch ppc ppc64 sparc sparc64
+%ifnarch ppc sparc sparc64
 %files virt
 %{_libdir}/collectd/virt.so
 %config(noreplace) %{_sysconfdir}/collectd.d/libvirt.conf
@@ -977,6 +979,11 @@ rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
 
 
 %changelog
+* Sun Oct 25 2015 Peter Robinson <pbrobinson@fedoraproject.org> 5.5.0-9
+- Use %%license
+- Fix build on PPC64 and PPC64LE
+- Minor spec cleanups
+
 * Tue Sep 08 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.5.0-8
 - Rebuild for hiredis soname bump
 - Drop hardened_build macro, it's the default now
