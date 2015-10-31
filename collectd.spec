@@ -3,7 +3,7 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.5.0
-Release: 9%{?dist}
+Release: 10%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -21,6 +21,7 @@ Source97: rrdtool.conf
 Source98: onewire.conf
 
 Patch0: %{name}-include-collectd.d.patch
+Patch1: 0001-varnish-fix-build-with-varnish-4.1.patch
 
 BuildRequires: perl(ExtUtils::MakeMaker)
 BuildRequires: perl(ExtUtils::Embed)
@@ -500,6 +501,7 @@ This is a collectd plugin that reads data from Zookeeper's MNTR command.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 # recompile generated files
 touch src/riemann.proto src/pinba.proto
@@ -979,6 +981,9 @@ make check
 
 
 %changelog
+* Sat Oct 31 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.5.0-10
+- Fix build against Varnish 4.1 (#1275413)
+
 * Sun Oct 25 2015 Peter Robinson <pbrobinson@fedoraproject.org> 5.5.0-9
 - Use %%license
 - Fix build on PPC64 and PPC64LE

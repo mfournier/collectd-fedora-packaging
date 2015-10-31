@@ -1,0 +1,78 @@
+From 81da8148e9ba53a9d537e4edce79fd32e2d9f174 Mon Sep 17 00:00:00 2001
+From: Ruben Kerkhof <ruben@rubenkerkhof.com>
+Date: Sat, 31 Oct 2015 14:39:34 +0100
+Subject: [PATCH] varnish: fix build with varnish 4.1
+
+Varnish 4.1 dropped some stats.
+---
+ src/varnish.c | 26 --------------------------
+ 1 file changed, 26 deletions(-)
+
+diff --git a/src/varnish.c b/src/varnish.c
+index c6c4df05d413..93cf7de18b8b 100644
+--- a/src/varnish.c
++++ b/src/varnish.c
+@@ -199,8 +199,6 @@ static void varnish_monitor (const user_config_t *conf, /* {{{ */
+ 		varnish_submit_derive (conf->instance, "backend", "connections", "failures"     , stats->backend_fail);
+ 		/* Backend conn. reuses        */
+ 		varnish_submit_derive (conf->instance, "backend", "connections", "reuses"       , stats->backend_reuse);
+-		/* Backend conn. was closed    */
+-		varnish_submit_derive (conf->instance, "backend", "connections", "was-closed"   , stats->backend_toolate);
+ 		/* Backend conn. recycles      */
+ 		varnish_submit_derive (conf->instance, "backend", "connections", "recycled"     , stats->backend_recycle);
+ #if HAVE_VARNISH_V2
+@@ -228,12 +226,6 @@ static void varnish_monitor (const user_config_t *conf, /* {{{ */
+ 		varnish_submit_derive (conf->instance, "fetch", "http_requests", "eof"        , stats->fetch_eof);
+ 		/* Fetch bad headers         */
+ 		varnish_submit_derive (conf->instance, "fetch", "http_requests", "bad_headers", stats->fetch_bad);
+-		/* Fetch wanted close        */
+-		varnish_submit_derive (conf->instance, "fetch", "http_requests", "close"      , stats->fetch_close);
+-		/* Fetch pre HTTP/1.1 closed */
+-		varnish_submit_derive (conf->instance, "fetch", "http_requests", "oldhttp"    , stats->fetch_oldhttp);
+-		/* Fetch zero len            */
+-		varnish_submit_derive (conf->instance, "fetch", "http_requests", "zero"       , stats->fetch_zero);
+ 		/* Fetch failed              */
+ 		varnish_submit_derive (conf->instance, "fetch", "http_requests", "failed"     , stats->fetch_failed);
+ #if HAVE_VARNISH_V3 || HAVE_VARNISH_V4
+@@ -347,8 +339,6 @@ static void varnish_monitor (const user_config_t *conf, /* {{{ */
+ 	{
+ 		/* Session Closed     */
+ 		varnish_submit_derive (conf->instance, "session", "total_operations", "closed",    stats->sess_closed);
+-		/* Session Pipeline   */
+-		varnish_submit_derive (conf->instance, "session", "total_operations", "pipeline",  stats->sess_pipeline);
+ 		/* Session Read Ahead */
+ 		varnish_submit_derive (conf->instance, "session", "total_operations", "readahead", stats->sess_readahead);
+ #if HAVE_VARNISH_V4
+@@ -358,8 +348,6 @@ static void varnish_monitor (const user_config_t *conf, /* {{{ */
+ 		varnish_submit_derive (conf->instance, "session", "total_operations", "dropped",   stats->sess_drop);
+ 		/* Sessions accept failure */
+ 		varnish_submit_derive (conf->instance, "session", "total_operations", "failed",    stats->sess_fail);
+-		/* Sessions pipe overflow */
+-		varnish_submit_derive (conf->instance, "session", "total_operations", "overflow",  stats->sess_pipe_overflow);
+ 		/* Sessions queued for thread */
+ 		varnish_submit_derive (conf->instance, "session", "total_operations", "queued",    stats->sess_queued);
+ #else
+@@ -412,20 +400,6 @@ static void varnish_monitor (const user_config_t *conf, /* {{{ */
+ 	}
+ #endif
+ 
+-	if (conf->collect_sms)
+-	{
+-		/* SMS allocator requests */
+-		varnish_submit_derive (conf->instance, "sms", "total_requests", "allocator", stats->sms_nreq);
+-		/* SMS outstanding allocations */
+-		varnish_submit_gauge (conf->instance,  "sms", "requests", "outstanding",     stats->sms_nobj);
+-		/* SMS outstanding bytes */
+-		varnish_submit_gauge (conf->instance,  "sms", "bytes", "outstanding",        stats->sms_nbytes);
+-		/* SMS bytes allocated */
+-		varnish_submit_derive (conf->instance,  "sms", "total_bytes", "allocated",   stats->sms_balloc);
+-		/* SMS bytes freed */
+-		varnish_submit_derive (conf->instance,  "sms", "total_bytes", "free",        stats->sms_bfree);
+-	}
+-
+ 	if (conf->collect_struct)
+ 	{
+ #if !HAVE_VARNISH_V4
+-- 
+2.6.2
+
