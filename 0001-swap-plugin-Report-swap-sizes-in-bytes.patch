@@ -1,0 +1,41 @@
+From 9e5f039037408f23aafacf6ad08b955f73418ebd Mon Sep 17 00:00:00 2001
+From: Marek Becka <marek.becka@superhosting.cz>
+Date: Tue, 9 Jun 2015 16:56:55 -0400
+Subject: [PATCH 01/14] swap plugin: Report swap sizes in bytes.
+
+Regression from 43aa1c5cc9ab69004d0fe6de480c78815224111b.
+
+(cherry picked from commit 871b643dc18d7ffe0ba8334dc5fb222741433774)
+---
+ src/swap.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/src/swap.c b/src/swap.c
+index a8276c7..cfde4ea 100644
+--- a/src/swap.c
++++ b/src/swap.c
+@@ -281,7 +281,8 @@ static int swap_read_separate (void) /* {{{ */
+ 		if (total < used)
+ 			continue;
+ 
+-		swap_submit_usage (path, used, total - used, NULL, NAN);
++		swap_submit_usage (path, used * 1024.0, (total - used) * 1024.0,
++				NULL, NAN);
+ 	}
+ 
+ 	fclose (fh);
+@@ -340,8 +341,9 @@ static int swap_read_combined (void) /* {{{ */
+ 	if (swap_used < 0.0)
+ 		return (EINVAL);
+ 
+-	swap_submit_usage (NULL, swap_used, swap_free,
+-			isnan (swap_cached) ? NULL : "cached", swap_cached);
++	swap_submit_usage (NULL, swap_used * 1024.0, swap_free * 1024.0,
++			isnan (swap_cached) ? NULL : "cached",
++			isnan (swap_cached) ? NAN : swap_cached * 1024.0);
+ 	return (0);
+ } /* }}} int swap_read_combined */
+ 
+-- 
+2.5.0
+

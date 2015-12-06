@@ -1,0 +1,29 @@
+From 0fb2fec0c4f3a4f6c508a76f53ff747021738420 Mon Sep 17 00:00:00 2001
+From: Ruben Kerkhof <ruben@rubenkerkhof.com>
+Date: Sat, 4 Jul 2015 22:49:49 +0200
+Subject: [PATCH 03/14] varnish: fix leak on read
+
+Since VSM_Close doesn't free the object we leak a few bytes
+every interval
+
+(cherry picked from commit 0eebd2655842fbb634f67afd44fa4fdcf4e6f189)
+---
+ src/varnish.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/varnish.c b/src/varnish.c
+index b962261..a27f9cf 100644
+--- a/src/varnish.c
++++ b/src/varnish.c
+@@ -643,7 +643,7 @@ static int varnish_read (user_data_t *ud) /* {{{ */
+ 
+ 
+ 	varnish_monitor (conf, stats);
+-	VSM_Close (vd);
++	VSM_Delete (vd);
+ 
+ 	return (0);
+ } /* }}} */
+-- 
+2.5.0
+

@@ -3,7 +3,7 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
 Version: 5.5.0
-Release: 10%{?dist}
+Release: 11%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -21,7 +21,14 @@ Source97: rrdtool.conf
 Source98: onewire.conf
 
 Patch0: %{name}-include-collectd.d.patch
-Patch1: 0001-varnish-fix-build-with-varnish-4.1.patch
+Patch1: 0001-swap-plugin-Report-swap-sizes-in-bytes.patch
+Patch2: 0002-varnish-fix-some-leaks-in-error-paths.patch
+Patch3: 0003-varnish-fix-leak-on-read.patch
+Patch4: 0004-Fix-varnish-detection-on-FreeBSD.patch
+Patch5: 0005-varnish-isolate-varnish-v2-code.patch
+Patch6: 0006-varnish-rework-v3-and-v4-support.patch
+Patch7: 0007-varnish-remove-unused-variable.patch
+Patch8: 0008-varnish-plugin-fix-two-resource-leaks-on-error.patch
 
 BuildRequires: perl(ExtUtils::MakeMaker)
 BuildRequires: perl(ExtUtils::Embed)
@@ -502,6 +509,13 @@ This is a collectd plugin that reads data from Zookeeper's MNTR command.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
 
 # recompile generated files
 touch src/riemann.proto src/pinba.proto
@@ -981,6 +995,10 @@ make check
 
 
 %changelog
+* Sun Dec 06 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.5.0-11
+- Fix regression in swap plugin (#1261237)
+- Replace my patch for Varnish 4.1 with upstream patches
+
 * Sat Oct 31 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.5.0-10
 - Fix build against Varnish 4.1 (#1275413)
 

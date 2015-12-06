@@ -1,0 +1,45 @@
+From 3f44948caaf866e7fc6113b8f050e5bb97af3685 Mon Sep 17 00:00:00 2001
+From: Ruben Kerkhof <ruben@rubenkerkhof.com>
+Date: Sat, 1 Aug 2015 13:22:07 +0200
+Subject: [PATCH 04/14] Fix varnish detection on FreeBSD
+
+We look for varnish/vapi/vsc.h in /usr/include/varnish
+but we should look for vapi/vsc.h
+
+This is only an issue on FreeBSD since /usr/local/include is not
+in the default search path.
+
+(cherry picked from commit ec2e074fd3af505875984dff66eb23c9b024f531)
+---
+diff --git a/src/varnish.c b/src/varnish.c
+index a27f9cf..1089222 100644
+--- a/src/varnish.c
++++ b/src/varnish.c
+@@ -29,19 +29,19 @@
+ #include "configfile.h"
+ 
+ #if HAVE_VARNISH_V4
+-#include <varnish/vapi/vsm.h>
+-#include <varnish/vapi/vsc.h>
++#include <vapi/vsm.h>
++#include <vapi/vsc.h>
+ typedef struct VSC_C_main c_varnish_stats_t;
+ #endif
+ 
+ #if HAVE_VARNISH_V3
+-#include <varnish/varnishapi.h>
+-#include <varnish/vsc.h>
++#include <varnishapi.h>
++#include <vsc.h>
+ typedef struct VSC_C_main c_varnish_stats_t;
+ #endif
+ 
+ #if HAVE_VARNISH_V2
+-#include <varnish/varnishapi.h>
++#include <varnishapi.h>
+ typedef struct varnish_stats c_varnish_stats_t;
+ #endif
+ 
+-- 
+2.5.0
+
