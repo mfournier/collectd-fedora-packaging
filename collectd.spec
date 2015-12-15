@@ -506,16 +506,7 @@ This is a collectd plugin that reads data from Zookeeper's MNTR command.
 
 
 %prep
-%setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
+%autosetup -v -p1
 
 # recompile generated files
 touch src/riemann.proto src/pinba.proto
