@@ -2,8 +2,8 @@
 
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd
-Version: 5.5.0
-Release: 11%{?dist}
+Version: 5.5.1
+Release: 0%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://collectd.org/
@@ -21,14 +21,6 @@ Source97: rrdtool.conf
 Source98: onewire.conf
 
 Patch0: %{name}-include-collectd.d.patch
-Patch1: 0001-swap-plugin-Report-swap-sizes-in-bytes.patch
-Patch2: 0002-varnish-fix-some-leaks-in-error-paths.patch
-Patch3: 0003-varnish-fix-leak-on-read.patch
-Patch4: 0004-Fix-varnish-detection-on-FreeBSD.patch
-Patch5: 0005-varnish-isolate-varnish-v2-code.patch
-Patch6: 0006-varnish-rework-v3-and-v4-support.patch
-Patch7: 0007-varnish-remove-unused-variable.patch
-Patch8: 0008-varnish-plugin-fix-two-resource-leaks-on-error.patch
 
 BuildRequires: perl(ExtUtils::MakeMaker)
 BuildRequires: perl(ExtUtils::Embed)
@@ -292,9 +284,9 @@ This plugin for collectd provides Network UPS Tools support.
 
 
 %package onewire
-Summary:	OneWire bus plugin for collectd
-Requires:	collectd = %{version}-%{release}, owfs-server, owfs-capi
-BuildRequires:	owfs-devel
+Summary:       OneWire bus plugin for collectd
+Requires:      collectd = %{version}-%{release}, owfs-server, owfs-capi
+BuildRequires: owfs-devel
 %description onewire
 The experimental OneWire plugin collects temperature information
 from sensors connected to the computer over the OneWire bus.
@@ -986,6 +978,9 @@ make check
 
 
 %changelog
+* Sat Jan 30 2016 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.5.1-0
+- Upstream released new version
+
 * Sun Dec 06 2015 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.5.0-11
 - Fix regression in swap plugin (#1261237)
 - Replace my patch for Varnish 4.1 with upstream patches
