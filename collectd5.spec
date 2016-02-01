@@ -1,14 +1,15 @@
 %global __provides_exclude_from ^%{_libdir}/collectd/.*\\.so$
 
 Summary: Statistics collection daemon for filling RRD files
-Name: collectd
+Name: collectd5
 Version: 5.5.1
 Release: 1%{?dist}
 License: GPLv2
+Conflicts: collectd
 Group: System Environment/Daemons
 URL: http://collectd.org/
 
-Source: http://collectd.org/files/%{name}-%{version}.tar.bz2
+Source: http://collectd.org/files/collectd-%{version}.tar.bz2
 Source1: collectd-httpd.conf
 Source2: collectd.service
 Source91: apache.conf
@@ -20,7 +21,7 @@ Source96: snmp.conf
 Source97: rrdtool.conf
 Source98: onewire.conf
 
-Patch0: %{name}-include-collectd.d.patch
+Patch0: collectd-include-collectd.d.patch
 
 BuildRequires: perl(ExtUtils::MakeMaker)
 BuildRequires: perl(ExtUtils::Embed)
@@ -498,7 +499,7 @@ This is a collectd plugin that reads data from Zookeeper's MNTR command.
 
 
 %prep
-%autosetup -v -p1
+%setup -n collectd-%{version}
 
 # recompile generated files
 touch src/riemann.proto src/pinba.proto
