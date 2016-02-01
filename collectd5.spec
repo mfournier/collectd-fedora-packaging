@@ -535,7 +535,7 @@ find %{buildroot} -name perllocal.pod -delete
 # copy web interface
 cp -ad contrib/collection3/* %{buildroot}%{_datadir}/collectd/collection3/
 cp -pv %{buildroot}%{_datadir}/collectd/collection3/etc/collection.conf %{buildroot}%{_sysconfdir}/collection.conf
-ln -rsf %{_sysconfdir}/collection.conf %{buildroot}%{_datadir}/collectd/collection3/etc/collection.conf
+ln -sf %{_sysconfdir}/collection.conf %{buildroot}%{_datadir}/collectd/collection3/etc/collection.conf
 cp -pv %{SOURCE1} %{buildroot}%{_sysconfdir}/httpd/conf.d/collectd.conf
 chmod +x %{buildroot}%{_datadir}/collectd/collection3/bin/*.cgi
 
