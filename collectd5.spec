@@ -19,7 +19,6 @@ Source94: nginx.conf
 Source95: sensors.conf
 Source96: snmp.conf
 Source97: rrdtool.conf
-Source98: onewire.conf
 
 Patch0: collectd-include-collectd.d.patch
 
@@ -284,15 +283,6 @@ This plugin for collectd provides Network UPS Tools support.
 %endif
 
 
-%package onewire
-Summary:       OneWire bus plugin for collectd
-Requires:      %{name}%{?_isa} = %{version}-%{release}
-BuildRequires: owfs-devel
-%description onewire
-The experimental OneWire plugin collects temperature information
-from sensors connected to the computer over the OneWire bus.
-
-
 %package openldap
 Summary:       OpenLDAP plugin for collectd
 Group:         System Environment/Daemons
@@ -349,16 +339,6 @@ BuildRequires: hiredis-devel
 %description redis
 The Redis plugin connects to one or more instances of Redis, a key-value store,
 and collects usage information using the hiredis library.
-
-
-%package rrdcached
-Summary:       RRDCacheD plugin for collectd
-Group:         System Environment/Daemons
-Requires:      %{name}%{?_isa} = %{version}-%{release}
-BuildRequires: rrdtool-devel
-%description rrdcached
-This plugin uses the RRDtool accelerator daemon, rrdcached(1),
-to store values to RRD files in an efficient manner.
 
 
 %package rrdtool
@@ -480,16 +460,6 @@ Requires:      %{name}%{?_isa} = %{version}-%{release}
 This plugin can send data to OpenTSDB.
 
 
-%package xmms
-Summary:       XMMS plugin for collectd
-Group:         System Environment/Daemons
-Requires:      %{name}%{?_isa} = %{version}-%{release}
-BuildRequires: xmms-devel
-%description xmms
-This is a collectd plugin for the XMMS music player.
-It graphs the bit-rate and sampling rate as you play songs.
-
-
 %package zookeeper
 Summary:       Zookeeper plugin for collectd
 Group:         System Environment/Daemons
@@ -522,9 +492,11 @@ touch src/riemann.proto src/pinba.proto
 %ifarch s390 s390x
     --disable-nut \
 %endif
+    --disable-onewire \
     --disable-oracle \
     --disable-pf \
     --disable-routeros \
+    --disable-rrdcached \
 %ifarch ppc sparc sparc64
     --disable-sensors \
 %endif
@@ -536,6 +508,7 @@ touch src/riemann.proto src/pinba.proto
 %endif
     --disable-write_kafka \
     --disable-write_mongodb \
+    --disable-xmms \
     --disable-zfs_arc \
     --with-libiptc \
     --with-java=%{java_home}/ \
@@ -583,7 +556,6 @@ cp %{SOURCE94} %{buildroot}%{_sysconfdir}/collectd.d/nginx.conf
 cp %{SOURCE95} %{buildroot}%{_sysconfdir}/collectd.d/sensors.conf
 cp %{SOURCE96} %{buildroot}%{_sysconfdir}/collectd.d/snmp.conf
 cp %{SOURCE97} %{buildroot}%{_sysconfdir}/collectd.d/rrdtool.conf
-cp %{SOURCE98} %{buildroot}%{_sysconfdir}/collectd.d/onewire.conf
 
 # configs for subpackaged plugins
 %ifnarch s390 s390x
@@ -635,7 +607,6 @@ make check
 %ifnarch s390 s390x
 %exclude %{_sysconfdir}/collectd.d/nut.conf
 %endif
-%exclude %{_sysconfdir}/collectd.d/onewire.conf
 %exclude %{_sysconfdir}/collectd.d/perl.conf
 %exclude %{_sysconfdir}/collectd.d/ping.conf
 %exclude %{_sysconfdir}/collectd.d/postgresql.conf
@@ -867,11 +838,6 @@ make check
 %endif
 
 
-%files onewire
-%{_libdir}/collectd/onewire.so
-%config(noreplace) %{_sysconfdir}/collectd.d/onewire.conf
-
-
 %files openldap
 %{_libdir}/collectd/openldap.so
 
@@ -903,10 +869,6 @@ make check
 
 %files redis
 %{_libdir}/collectd/redis.so
-
-
-%files rrdcached
-%{_libdir}/collectd/rrdcached.so
 
 
 %files rrdtool
@@ -968,10 +930,6 @@ make check
 
 %files write_tsdb
 %{_libdir}/collectd/write_tsdb.so
-
-
-%files xmms
-%{_libdir}/collectd/xmms.so
 
 
 %files zookeeper
