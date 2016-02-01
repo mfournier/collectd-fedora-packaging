@@ -11,7 +11,6 @@ URL: http://collectd.org/
 
 Source: http://collectd.org/files/collectd-%{version}.tar.bz2
 Source1: collectd-httpd.conf
-Source2: collectd.service
 Source91: apache.conf
 Source92: email.conf
 Source93: mysql.conf
@@ -26,9 +25,6 @@ BuildRequires: perl(ExtUtils::MakeMaker)
 BuildRequires: perl(ExtUtils::Embed)
 BuildRequires: python-devel
 BuildRequires: libgcrypt-devel
-Requires(post):   systemd
-Requires(preun):  systemd
-Requires(postun): systemd
 
 %description
 collectd is a small daemon written in C for performance.  It reads various
@@ -524,7 +520,7 @@ rm -rf contrib/SpamAssassin
 make install DESTDIR="%{buildroot}"
 
 install -Dp -m0644 src/collectd.conf %{buildroot}%{_sysconfdir}/collectd.conf
-install -Dp -m0644 %{SOURCE2} %{buildroot}%{_unitdir}/collectd.service
+install -Dp -m0755 contrib/redhat/init.d-collectd %{buildroot}%{_initrddir}/collectd
 install -d -m0755 %{buildroot}%{_localstatedir}/lib/collectd/rrd
 install -d -m0755 %{buildroot}%{_datadir}/collectd/collection3/
 install -d -m0755 %{buildroot}%{_sysconfdir}/httpd/conf.d/
@@ -579,16 +575,19 @@ make check
 
 %post
 /sbin/ldconfig
-%systemd_post collectd.service
+/sbin/chkconfig --add collectd
 
 
 %preun
-%systemd_preun collectd.service
+if [ $1 -eq 0 ]; the
+    /sbin/service collectd stop &>/dev/null || :
+    /sbin/chkconfig --del collectd
+fi
 
 
 %postun
 /sbin/ldconfig
-%systemd_postun_with_restart collectd.service
+/sbin/service collectd condrestart &>/dev/null || :
 
 
 %files
@@ -615,7 +614,7 @@ make check
 %exclude %{_sysconfdir}/collectd.d/sensors.conf
 %exclude %{_sysconfdir}/collectd.d/snmp.conf
 
-%{_unitdir}/collectd.service
+%{_initrddir}/collectd
 %{_bindir}/collectd-nagios
 %{_bindir}/collectdctl
 %{_bindir}/collectd-tg
