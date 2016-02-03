@@ -173,6 +173,15 @@ BuildRequires: OpenIPMI-devel
 This plugin for collectd provides IPMI support.
 
 
+%package iptables
+Summary:       IPtables plugin for collectd
+Group:         System Environment/Daemons
+Requires:      %{name}%{?_isa} = %{version}-%{release}
+BuildRequires: iptables-devel
+%description iptables
+This plugin for collectd provides iptables support.
+
+
 %package ipvs
 Summary:       IPVS plugin for collectd
 Group:         System Environment/Daemons
@@ -481,7 +490,6 @@ touch src/riemann.proto src/pinba.proto
     --disable-apple_sensors \
     --disable-aquaero \
     --disable-barometer \
-    --disable-iptables \
     --disable-lpar \
     --disable-mic \
     --disable-netapp \
@@ -784,6 +792,10 @@ fi
 %files ipmi
 %{_libdir}/collectd/ipmi.so
 %config(noreplace) %{_sysconfdir}/collectd.d/ipmi.conf
+
+
+%files iptables
+%{_libdir}/collectd/iptables.so
 
 
 %files ipvs
