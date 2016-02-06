@@ -146,12 +146,14 @@ Requires:      %{name}%{?_isa} = %{version}-%{release}
 This plugin collects data provided by spamassassin.
 
 
+%ifnarch ppc64
 %package generic-jmx
 Summary:       Generic JMX plugin for collectd
 Group:         System Environment/Daemons
 Requires:      %{name}%{?_isa} = %{version}-%{release}
 %description generic-jmx
 This plugin collects data provided by JMX.
+%endif
 
 
 %package gmond
@@ -190,6 +192,7 @@ Requires:      %{name}%{?_isa} = %{version}-%{release}
 This plugin collects data from IPVS.
 
 
+%ifnarch ppc64
 %package java
 Summary:       Java bindings for collectd
 Group:         System Environment/Daemons
@@ -198,6 +201,7 @@ BuildRequires: java-devel
 BuildRequires: jpackage-utils
 %description java
 These are the Java bindings for collectd.
+%endif
 
 
 %package lvm
@@ -515,7 +519,11 @@ touch src/riemann.proto src/pinba.proto
     --disable-xmms \
     --disable-zfs_arc \
     --with-libiptc \
+%ifnarch ppc64
     --with-java=%{java_home}/ \
+%else
+    --disable-java \
+%endif
     --with-python \
     --with-perl-bindings=INSTALLDIRS=vendor \
     AR_FLAGS="-cr"
@@ -575,6 +583,10 @@ done
 
 # *.la files shouldn't be distributed.
 rm -f %{buildroot}/%{_libdir}/{collectd/,}*.la
+
+%ifarch ppc64
+rm -f %{buildroot}%{_mandir}/man5/collectd-java.5*
+%endif
 
 
 %check
@@ -781,8 +793,10 @@ fi
 %doc %{_mandir}/man5/collectd-email.5*
 
 
+%ifnarch ppc64
 %files generic-jmx
 %{_datadir}/collectd/java/generic-jmx.jar
+%endif
 
 
 %files gmond
@@ -802,11 +816,13 @@ fi
 %{_libdir}/collectd/ipvs.so
 
 
+%ifnarch ppc64
 %files java
 %{_libdir}/collectd/java.so
 %dir %{_datadir}/collectd/java/
 %{_datadir}/collectd/java/collectd-api.jar
 %doc %{_mandir}/man5/collectd-java.5*
+%endif
 
 %files lvm
 %{_libdir}/collectd/lvm.so
