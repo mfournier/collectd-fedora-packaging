@@ -473,6 +473,7 @@ This is a collectd plugin that reads data from Zookeeper's MNTR command.
 
 %prep
 %setup -qn collectd-%{version}
+%patch0 -p1
 
 # recompile generated files
 touch src/riemann.proto src/pinba.proto
