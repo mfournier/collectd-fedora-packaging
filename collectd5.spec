@@ -281,7 +281,6 @@ This plugin uses the ESMTP library to send
 notifications to a configured email address.
 
 
-%ifnarch s390 s390x
 %package nut
 Summary:       Network UPS Tools plugin for collectd
 Group:         System Environment/Daemons
@@ -289,7 +288,6 @@ Requires:      %{name}%{?_isa} = %{version}-%{release}
 BuildRequires: nut-devel
 %description nut
 This plugin for collectd provides Network UPS Tools support.
-%endif
 
 
 %package openldap
@@ -359,7 +357,6 @@ BuildRequires: rrdtool-devel
 This plugin for collectd provides rrdtool support.
 
 
-%ifnarch ppc sparc sparc64
 %package sensors
 Summary:       Libsensors module for collectd
 Group:         System Environment/Daemons
@@ -368,7 +365,6 @@ BuildRequires: lm_sensors-devel
 %description sensors
 This plugin for collectd provides querying of sensors supported by
 lm_sensors.
-%endif
 
 
 %package smart
@@ -411,7 +407,6 @@ BuildRequires: varnish-libs-devel
 This plugin collects information about Varnish, an HTTP accelerator.
 
 
-%ifnarch ppc sparc sparc64
 %package virt
 Summary:       Libvirt plugin for collectd
 Group:         System Environment/Daemons
@@ -420,7 +415,6 @@ BuildRequires: libvirt-devel
 BuildRequires: libxml2-devel
 %description virt
 This plugin collects information from virtualized guests.
-%endif
 
 
 %package web
@@ -497,17 +491,11 @@ touch src/riemann.proto src/pinba.proto
     --disable-lpar \
     --disable-mic \
     --disable-netapp \
-%ifarch s390 s390x
-    --disable-nut \
-%endif
     --disable-onewire \
     --disable-oracle \
     --disable-pf \
     --disable-routeros \
     --disable-rrdcached \
-%ifarch ppc sparc sparc64
-    --disable-sensors \
-%endif
     --disable-sigrok \
     --disable-tape \
     --disable-tokyotyrant \
@@ -570,11 +558,7 @@ cp %{SOURCE96} %{buildroot}%{_sysconfdir}/collectd.d/snmp.conf
 cp %{SOURCE97} %{buildroot}%{_sysconfdir}/collectd.d/rrdtool.conf
 
 # configs for subpackaged plugins
-%ifnarch s390 s390x
 for p in dns ipmi libvirt nut perl ping postgresql
-%else
-for p in dns ipmi libvirt perl ping postgresql
-%endif
 do
 cat > %{buildroot}%{_sysconfdir}/collectd.d/$p.conf <<EOF
 LoadPlugin $p
@@ -623,9 +607,7 @@ fi
 %exclude %{_sysconfdir}/collectd.d/libvirt.conf
 %exclude %{_sysconfdir}/collectd.d/mysql.conf
 %exclude %{_sysconfdir}/collectd.d/nginx.conf
-%ifnarch s390 s390x
 %exclude %{_sysconfdir}/collectd.d/nut.conf
-%endif
 %exclude %{_sysconfdir}/collectd.d/perl.conf
 %exclude %{_sysconfdir}/collectd.d/ping.conf
 %exclude %{_sysconfdir}/collectd.d/postgresql.conf
@@ -858,11 +840,9 @@ fi
 %{_libdir}/collectd/notify_email.so
 
 
-%ifnarch s390 s390x
 %files nut
 %{_libdir}/collectd/nut.so
 %config(noreplace) %{_sysconfdir}/collectd.d/nut.conf
-%endif
 
 
 %files openldap
@@ -903,11 +883,9 @@ fi
 %config(noreplace) %{_sysconfdir}/collectd.d/rrdtool.conf
 
 
-%ifnarch ppc sparc sparc64
 %files sensors
 %{_libdir}/collectd/sensors.so
 %config(noreplace) %{_sysconfdir}/collectd.d/sensors.conf
-%endif
 
 
 %files smart
@@ -930,11 +908,9 @@ fi
 %{_libdir}/collectd/varnish.so
 
 
-%ifnarch ppc sparc sparc64
 %files virt
 %{_libdir}/collectd/virt.so
 %config(noreplace) %{_sysconfdir}/collectd.d/libvirt.conf
-%endif
 
 
 %files web
