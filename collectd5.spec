@@ -472,7 +472,7 @@ This is a collectd plugin that reads data from Zookeeper's MNTR command.
 
 
 %prep
-%setup -n collectd-%{version}
+%setup -qn collectd-%{version}
 
 # recompile generated files
 touch src/riemann.proto src/pinba.proto
