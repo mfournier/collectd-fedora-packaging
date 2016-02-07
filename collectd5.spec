@@ -584,7 +584,7 @@ make check
 
 
 %preun
-if [ $1 -eq 0 ]; the
+if [ $1 -eq 0 ]; then
     /sbin/service collectd stop &>/dev/null || :
     /sbin/chkconfig --del collectd
 fi
