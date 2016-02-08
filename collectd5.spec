@@ -513,8 +513,7 @@ touch src/riemann.proto src/pinba.proto
     --disable-java \
 %endif
     --with-python \
-    --with-perl-bindings=INSTALLDIRS=vendor \
-    AR_FLAGS="-cr"
+    --with-perl-bindings=INSTALLDIRS=vendor
 
 make %{?_smp_mflags}
 
