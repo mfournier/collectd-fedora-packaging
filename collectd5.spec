@@ -3,7 +3,7 @@
 Summary: Statistics collection daemon for filling RRD files
 Name: collectd5
 Version: 5.5.1
-Release: 1%{?dist}
+Release: 0%{?dist}
 License: GPLv2
 Conflicts: collectd
 Group: System Environment/Daemons
@@ -940,6 +940,9 @@ fi
 
 
 %changelog
+* Mon Feb 08 2016 Marc Fournier <marc.fournier@camptocamp.com> 5.5.1-0
+- Initial import for EL6
+
 * Sat Jan 30 2016 Ruben Kerkhof <ruben@rubenkerkhof.com> 5.5.1-1
 - Rediff patch
 - Use fully versioned dependencies on main package
