@@ -506,7 +506,6 @@ touch src/riemann.proto src/pinba.proto
     --disable-write_kafka \
     --disable-write_mongodb \
     --disable-xmms \
-    --disable-zfs_arc \
     --with-libiptc \
 %ifnarch ppc64
     --with-java=%{java_home}/ \
@@ -699,6 +698,7 @@ fi
 %{_libdir}/collectd/write_graphite.so
 %{_libdir}/collectd/write_http.so
 %{_libdir}/collectd/write_log.so
+%{_libdir}/collectd/zfs_arc.so
 
 %{_datadir}/collectd/types.db
 
